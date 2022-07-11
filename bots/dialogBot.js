@@ -1,46 +1,41 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 const { ActivityHandler } = require('botbuilder');
+const { LuisRecognizer } = require('botbuilder-ai')
 
 class DialogBot extends ActivityHandler {
-    /**
-     *
-     * @param {ConversationState} conversationState
-     * @param {UserState} userState
-     * @param {Dialog} dialog
-     */
+    
     constructor(conversationState, userState, dialog) {
         super();
-        if (!conversationState) throw new Error('[DialogBot]: Missing parameter. conversationState is required');
-        if (!userState) throw new Error('[DialogBot]: Missing parameter. userState is required');
-        if (!dialog) throw new Error('[DialogBot]: Missing parameter. dialog is required');
+        if (!conversationState) throw new Error('[DialogBot]: Parâmetro ausente. O estado de conversação é obrigatório');
+        if (!userState) throw new Error('[DialogBot]: Parâmetro ausente. userState é obrigatório');
+        if (!dialog) throw new Error('[DialogBot]: Parâmetro ausente. diálogo é necessário');
 
         this.conversationState = conversationState;
         this.userState = userState;
         this.dialog = dialog;
         this.dialogState = this.conversationState.createProperty('DialogState');
 
+        const dispatchRecognizer = new LuisRecognizer({
+            applicationId: process.env.LuisAppId,
+            endpointKey: process.env.LuisAPIKey,
+            endpoint: `https://${process.env.LuisAPIHostName}.cognitiveservices.azure.com/`
+        }, {
+            includeAllIntents: true
+        }, true);
+
         this.onMessage(async (context, next) => {
-            console.log('Running dialog with Message Activity.');
+            console.log('Diálogo em execução com a atividade de mensagem.');
 
-            // Run the Dialog with the new message Activity.
-            await this.dialog.run(context, this.dialogState);
-
-            //TO DO Aqui vai a chamada do luis
-
-            // By calling next() you ensure that the next BotHandler is run.
+            const luisResult = await dispatchRecognizer.recognize(context)
+            const intent = LuisRecognizer.topIntent(luisResult);
+            const entities = luisResult.entities;                   
+            await this.dialog.run(context, this.dialogState, intent, entities);          
+          
             await next();
         });
     }
-
-    /**
-     * Override the ActivityHandler.run() method to save state changes after the bot logic completes.
-     */
+   
     async run(context) {
-        await super.run(context);
-
-        // Save any state changes. The load happened during the execution of the Dialog.
+        await super.run(context);       
         await this.conversationState.saveChanges(context, false);
         await this.userState.saveChanges(context, false);
     }
