@@ -28,7 +28,10 @@ class DialogBot extends ActivityHandler {
             const luisResult = await dispatchRecognizer.recognize(context)
             const intent = LuisRecognizer.topIntent(luisResult);
             const entities = luisResult.entities;                   
-            await this.dialog.run(context, this.dialogState, intent, entities);          
+            await this.dialog.run(context, this.dialogState, intent, entities); 
+            console.log(luisResult);         
+            console.log(intent);         
+            console.log(entities);         
           
             await next();
         });
