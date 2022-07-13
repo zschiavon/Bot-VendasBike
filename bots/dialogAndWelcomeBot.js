@@ -5,6 +5,7 @@ class DialogAndWelcomeBot extends DialogBot {
         super(conversationState, userState, dialog);
 
         this.onMembersAdded(async (context, next) => {  
+           
             await next();
         });
     }
