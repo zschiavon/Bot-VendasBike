@@ -29,7 +29,7 @@ class TypeDialog extends CancelAndHelpDialog {
 
     async destinationStep(stepContext) {
 
-        const messageText = 'Fluxo de filtro por tipo!!!';
+        const messageText = 'Fluxo de filtro por tipo';
         await stepContext.context.sendActivity(messageText)
         return await stepContext.prompt(TEXT_PROMPT, '');
     }
