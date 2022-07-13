@@ -15,9 +15,7 @@ class DialogBot extends ActivityHandler {
        
 
         this.onMessage(async (context, next) => {
-            console.log('Diálogo em execução com a atividade de mensagem.');
-
-            
+            console.log('Diálogo em execução com a atividade de mensagem.');           
 
             await this.dialog.run(context, this.dialogState);
             await next();
