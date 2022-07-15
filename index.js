@@ -32,7 +32,7 @@ const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
 const dispatchRecognizer = new LuisRecognizer({
     applicationId: process.env.LuisAppId,
     endpointKey: process.env.LuisAPIKey,
-    endpoint: `https://${process.env.LuisAPIHostName}.cognitiveservices.azure.com/`
+    endpoint: `https://${ process.env.LuisAPIHostName }.cognitiveservices.azure.com/`
 }, {
     includeAllIntents: true
 }, true);
@@ -41,11 +41,8 @@ const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfigura
 
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
-
 const onTurnErrorHandler = async (context, error) => {
-   
     console.error(`\n [onTurnError] unhandled error: ${ error }`);
-    
     await context.sendTraceActivity(
         'OnTurnError Trace',
         `${ error }`,
@@ -53,15 +50,12 @@ const onTurnErrorHandler = async (context, error) => {
         'TurnError'
     );
 
-    
     let onTurnErrorMessage = 'O bot encontrou um erro ou bug.';
     await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
     onTurnErrorMessage = 'Para continuar a executar este bot, corrija o código-fonte do bot.';
     await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
-    
     await conversationState.delete(context);
 };
-
 
 adapter.onTurnError = onTurnErrorHandler;
 
@@ -69,10 +63,9 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
-const typeDialog = new TypeDialog(TYPE_DIALOG);
+const typeDialog = new TypeDialog(TYPE_DIALOG, dispatchRecognizer);
 const dialog = new MainDialog(dispatchRecognizer, typeDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
-
 
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
@@ -83,16 +76,12 @@ server.listen(process.env.port || process.env.PORT || 3978, function() {
     console.log('\nPara falar com seu bot, abra o emulador selecione "Open Bot"');
 });
 
-
-server.post('/api/messages', async (req, res) => {    
+server.post('/api/messages', async (req, res) => {
     await adapter.process(req, res, (context) => bot.run(context));
 });
 
-
 server.on('upgrade', async (req, socket, head) => {
-   
-    const streamingAdapter = new CloudAdapter(botFrameworkAuthentication);   
+    const streamingAdapter = new CloudAdapter(botFrameworkAuthentication);
     streamingAdapter.onTurnError = onTurnErrorHandler;
     await streamingAdapter.process(req, socket, head, (context) => bot.run(context));
-
 });
