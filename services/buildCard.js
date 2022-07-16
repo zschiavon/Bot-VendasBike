@@ -4,10 +4,10 @@ const { MessageFactory } = require('botbuilder');
 const buildCard = async (bike, index, stepContext) => {
         const card = CardFactory.heroCard(
                 ``,
-                [`${bike[index].image}`],
+                [`${ bike[index].image }`],
                 '',
         );
-        const info = `Nome: ${bike[index].name} \n\n Marca: ${bike[index].brand} \n\n Preço:${bike[index].price.toString()}`
+        const info = `Nome: ${ bike[index].name } \n\n Marca: ${ bike[index].brand } \n\n Preço:${ bike[index].price.toString() }`
 
         const message = MessageFactory.attachment(card);
         await stepContext.context.sendActivity(message);

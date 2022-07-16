@@ -9,13 +9,13 @@ async function searchApi(filtro, value) {
             filtrado = await response.data.filter(bike => { return bike.price <= value; });
             break;
         case 'gênero':
-            filtrado = await response.data.filter(bike => { return bike.gender === value; });
+            filtrado = await response.data.filter(bike => { return bike.gender == value; });
             break;
         case 'tipo':
-            filtrado = await response.data.filter(bike => { return bike.type === value; });
+            filtrado = await response.data.filter(bike => { return bike.type == value; });
             break;
         case 'cor':
-            filtrado = await response.data.filter(bike => { return bike.color === value; });
+            filtrado = await response.data.filter(bike => { return bike.color == value; });
             break;
         default:
             break;

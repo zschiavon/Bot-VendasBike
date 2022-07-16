@@ -1,5 +1,3 @@
-const { FileTranscriptStore } = require("botbuilder");
-
 const getEntities = (result, criteria) => {
     let value;
     try {

@@ -10,9 +10,9 @@ const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
-class TypeDialog extends CancelAndHelpDialog {
+class PriceDialog extends CancelAndHelpDialog {
     constructor(id, luisRecognizer) {
-        super(id, 'typeDialog');
+        super(id, 'priceDialog');
         if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
         this.luisRecognizer = luisRecognizer;
 
@@ -36,19 +36,18 @@ class TypeDialog extends CancelAndHelpDialog {
             return await stepContext.next();
         }
 
-        const firstMessage = 'Boa escolha! Vem comigo para selecionar a sua magrela. 🚴';
+        const firstMessage = 'Quanto você pretende investir na sua bicicleta? 🚴 Escolha entre as faixas de preço abaixo:';
         await stepContext.context.sendActivity(firstMessage);
 
-        const secondMessage = 'Qual opção está procurando?';
-        await stepContext.context.sendActivity(secondMessage);
-
-        return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Infantil', 'Casual', 'Estrada', 'Mountain Bike', 'Elétrica', 'Explorar outro filtro']));
+        return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Até R$ 500,00', 'De R$ 500,00 até R$ 1500,00', 'De R$ 1500,00 até R$ 3000,00', 'Mais de R$ 3000,00', 'Explorar outro filtro']));
     }
 
     async secondStep(stepContext) {
         const luisResult = await this.luisRecognizer.recognize(stepContext);
-        const tipo = getEntities(luisResult, 'Tipo');
-        const search = await searchApi('Tipo', tipo.entidade);
+        console.log(luisResult);
+        const preco = getEntities(luisResult, 'money');
+        console.log(preco);
+        const search = await searchApi('Preco', preco.money.entidade);
         // Arrumar uma forma do index variar pelo array de imagens e não apenas a última posição
         const index = (search.length - 1);
         await buildCard(search, index, stepContext);
@@ -65,4 +64,4 @@ class TypeDialog extends CancelAndHelpDialog {
     }
 }
 
-module.exports.TypeDialog = TypeDialog;
+module.exports.PriceDialog = PriceDialog;
