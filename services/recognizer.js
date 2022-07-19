@@ -1,4 +1,3 @@
-const { FileTranscriptStore } = require("botbuilder");
 
 const getEntities = (result, criteria) => {
         let value;
@@ -11,7 +10,7 @@ const getEntities = (result, criteria) => {
             value = result.entities.Tipo[0];                 
             break;        
             case 'gênero':
-            value = result.entities.Gênero[0];                 
+            value = result.entities.Genero[0];                 
             break;        
             case 'preco':
             value = result.entities.money.number;                 

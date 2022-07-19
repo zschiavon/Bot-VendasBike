@@ -1,8 +1,9 @@
 const { ActivityHandler } = require('botbuilder');
 
+
 class DialogBot extends ActivityHandler {
 
-    constructor(conversationState, userState, dialog) {
+    constructor(conversationState, userState, dialog, luisRecognizer) {
         super();
         if (!conversationState) throw new Error('[DialogBot]: Parâmetro ausente. O estado de conversação é obrigatório');
         if (!userState) throw new Error('[DialogBot]: Parâmetro ausente. userState é obrigatório');
@@ -12,11 +13,12 @@ class DialogBot extends ActivityHandler {
         this.userState = userState;
         this.dialog = dialog;
         this.dialogState = this.conversationState.createProperty('DialogState');
+        this.luisRecognizer = luisRecognizer
        
 
         this.onMessage(async (context, next) => {
             console.log('Diálogo em execução com a atividade de mensagem.');           
-
+            context.luisResult = await this.luisRecognizer.recognize(context)
             await this.dialog.run(context, this.dialogState);
             await next();
         });
