@@ -6,12 +6,9 @@ const { getEntities } = require('../services/recognizer')
 const { searchApi } = require('../services/apiCall')
 const { buildCard } = require('../services/buildCard')
 
-
-
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
-
 class ColorDialog extends CancelAndHelpDialog {
     constructor(id, luisRecognizer) {
 
@@ -26,7 +23,8 @@ class ColorDialog extends CancelAndHelpDialog {
                 this.actStep.bind(this),
                 this.callStep.bind(this),
                 this.confirmStep.bind(this),
-                this.finalStep.bind(this)
+                this.decisionStep.bind(this),
+                this.finalStep.bind(this),
             ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -44,8 +42,7 @@ class ColorDialog extends CancelAndHelpDialog {
         return await stepContext.next();       
 
     }
-    
-    
+        
     async actStep(stepContext) {        
         const { bikeVector, last } = stepContext.options
         
@@ -64,34 +61,45 @@ class ColorDialog extends CancelAndHelpDialog {
         return await stepContext.next();
     }
 
+<<<<<<< HEAD
+    async callStep(stepContext) {            
+            const {bikeVector, last} = stepContext.options
+=======
         async callStep(stepContext) {            
             const { bikeVector, last } = stepContext.options;
+>>>>>>> develop
             
             let bikes = bikeVector
             let index = last + 1          
             
+<<<<<<< HEAD
+            if(!bikeVector){ 
+                bikes = await searchApi('cor', stepContext.result.entidade)        
+                index = 0 
+=======
 
             if(!bikeVector){  
                 const color = getEntities(stepContext.context.luisResult, 'Cor');
                 bikes = await searchApi('cor', color.entidade);     
                 index = 0;
+>>>>>>> develop
             }  
 
             const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
             await stepContext.context.sendActivity(firstMessage)
             const lastBike = await buildCard(bikes, index, stepContext)
+
             stepContext.values.bikeVector = bikes
             stepContext.values.last = lastBike.lastPos
+            stepContext.values.finalBike = bikes[lastBike.lastPos]
 
             return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions([
                 'Ver mais informações', 'Ver próxima bike', 'Explorar outro filtro de pesquisa'
             ]));            
         }
         
-        async confirmStep(stepContext) {
-            const {bikeVector, last} = stepContext.options
-            console.log(stepContext.values.last, stepContext.values.bikeVecto)
-            console.log(LuisRecognizer.topIntent(stepContext.context.luisResult))
+    async confirmStep(stepContext) {
+            const {bikeVector, last} = stepContext.options            
             
             switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
                 case 'ProximaBike': {                
@@ -99,9 +107,16 @@ class ColorDialog extends CancelAndHelpDialog {
                 }
                 case 'MaisInfo': {                    
                    const info =`Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`               
+<<<<<<< HEAD
+                   const wish = 'Gostaria de comprar esta bicicleta agora?'
+                   await stepContext.context.sendActivity(info)
+                   await stepContext.context.sendActivity(wish)
+                   return await stepContext.prompt(TEXT_PROMPT, '');
+=======
                    
                    await stepContext.context.sendActivity(info);
                    break;
+>>>>>>> develop
                   
                 } case 'OutroFiltro': {
                     return await stepContext.beginDialog('MainDialog');
@@ -114,10 +129,57 @@ class ColorDialog extends CancelAndHelpDialog {
     
         }
 
+    async decisionStep(stepContext) {
+
+        if(LuisRecognizer.topIntent(stepContext.context.luisResult) != 'Utilities_Confirm'){
+            const message = 'O que você deseja fazer então?'
+            await stepContext.context.sendActivity(message)
+            return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions([
+                '\n\nVer próxima bike', '\n\nExplorar outro filtro de pesquisa', '\n\nEncerrar']));
+        }
+
+        const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`
+        const message = 'O que você deseja fazer agora?'
+            await stepContext.context.sendActivity(bikeName)
+            await stepContext.context.sendActivity(message)
+            return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions([
+                '\n\nFinalizar pedido', '\n\nContinuar comprando.']));  
+            }
+
     async finalStep(stepContext) {
+<<<<<<< HEAD
+        let message = 'EM DESENVOLVIMENTO'
+        switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
+            case 'ProximaBike': {                
+                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector , last: stepContext.values.last })                    
+            }
+            case 'FinalizarPedido': {                        
+                await stepContext.context.sendActivity(message)
+                break                    
+            }
+                      
+            case 'Continuar': { 
+                await stepContext.context.sendActivity(message)
+                break              
+            }
+            default: {  
+                await stepContext.context.sendActivity(message);
+            }
+                      
+        
+        }
+
+    }
+
+        
+=======
         
     }
 
+>>>>>>> develop
 }
+
+    
+
 
 module.exports.ColorDialog = ColorDialog;
