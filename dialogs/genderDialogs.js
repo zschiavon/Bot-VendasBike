@@ -22,6 +22,7 @@ class GenderDialog extends CancelAndHelpDialog {
                 this.actStep.bind(this),
                 this.callStep.bind(this),
                 this.confirmStep.bind(this),
+                this.decisionStep.bind(this),
                 this.finalStep.bind(this)
             ]));
 
@@ -97,7 +98,43 @@ class GenderDialog extends CancelAndHelpDialog {
         return await stepContext.next();
     }
 
+    async decisionStep(stepContext) {
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) != 'Utilities_Confirm') {
+            const message = 'O que você deseja fazer então?'
+            await stepContext.context.sendActivity(message)
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
+                '\n\nVer próxima bike', '\n\nExplorar outro filtro de pesquisa', '\n\nEncerrar']));
+        }
+
+        const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`
+        const message = 'O que você deseja fazer agora?'
+        await stepContext.context.sendActivity(bikeName)
+        await stepContext.context.sendActivity(message)
+        return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
+            '\n\nFinalizar pedido', '\n\nContinuar comprando.']));
+    }
+
     async finalStep(stepContext) {
+        let message = 'EM DESENVOLVIMENTO'
+        switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
+            case 'ProximaBike': {
+                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last })
+            }
+            case 'FinalizarPedido': {
+                await stepContext.context.sendActivity(message)
+                break
+            }
+
+            case 'Continuar': {
+                await stepContext.context.sendActivity(message)
+                break
+            }
+            default: {
+                await stepContext.context.sendActivity(message);
+            }
+
+
+        }
     }
 }
 
