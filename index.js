@@ -20,10 +20,14 @@ const {
 const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { TypeDialog } = require('./dialogs/typeDialog');
+const { ColorDialog } = require('./dialogs/colorDialog');
 const { GenderDialog } = require('./dialogs/genderDialogs');
+const { PriceDialog } = require('./dialogs/priceDialog');
 const {CancelAndHelpDialog} = require('./dialogs/cancelAndHelpDialog')
 const TYPE_DIALOG = 'typeDialog';
+const COLOR_DIALOG = 'colorDialog';
 const GENDER_DIALOG = 'genderDialog';
+const PRICE_DIALOG = 'priceDialog';
 const HELP_DIALOG = 'cancelandHelpDialog';
 
 
@@ -69,9 +73,11 @@ const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
 const typeDialog = new TypeDialog(TYPE_DIALOG,dispatchRecognizer);
+const colorDialog = new ColorDialog(COLOR_DIALOG,dispatchRecognizer);
+const priceDialog = new PriceDialog(PRICE_DIALOG,dispatchRecognizer);
 const cancelandHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer)
 const genderDialog = new GenderDialog(GENDER_DIALOG,dispatchRecognizer);
-const dialog = new MainDialog(dispatchRecognizer, typeDialog, genderDialog);
+const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog, genderDialog, priceDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 

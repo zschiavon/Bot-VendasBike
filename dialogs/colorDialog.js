@@ -1,4 +1,3 @@
-const { TimexProperty } = require('@microsoft/recognizers-text-data-types-timex-expression');
 const { InputHints, MessageFactory } = require('botbuilder');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
@@ -34,7 +33,7 @@ class ColorDialog extends CancelAndHelpDialog {
     }
 
     async colorStep(stepContext) { 
-        const {bikeVector, last} = stepContext.options
+        const { bikeVector, last } = stepContext.options;
         
         if(!bikeVector){
             const messageText = "Qual a que cor você quer para a sua bicicleta?";
@@ -48,7 +47,7 @@ class ColorDialog extends CancelAndHelpDialog {
     
     
     async actStep(stepContext) {        
-        const {bikeVector, last} = stepContext.options
+        const { bikeVector, last } = stepContext.options
         
         if(!bikeVector){                    
             const color = getEntities(stepContext.context.luisResult, 'Cor')            
@@ -57,36 +56,36 @@ class ColorDialog extends CancelAndHelpDialog {
                 return await stepContext.next(color);           
             }  
             
-            return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions([
-                '\n\nBranca', '\n\nPreta', '\n\nAzul', '\n\nRosa', '\n\nVerde', '\n\nVermelha', '\n\nOutras cores', '\n\nExplorar outro filtro de pesquisa']));
+            return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions(
+                ['Branco', 'Preto', 'Azul', 'Rosa', 'Verde', 'Vermelho', 'Outras cores', 'Explorar outro filtro de pesquisa']
+            ));
                 
-            }
-            return await stepContext.next();
-        }
+        }      
+        return await stepContext.next();
+    }
 
         async callStep(stepContext) {            
-            const {bikeVector, last} = stepContext.options
+            const { bikeVector, last } = stepContext.options;
             
             let bikes = bikeVector
             let index = last + 1          
             
-            
-            console.log(bikeVector)
 
-            if(!bikeVector){ 
-                bikes = await searchApi('cor', stepContext.result.entidade)        
-                index = 0 
+            if(!bikeVector){  
+                const color = getEntities(stepContext.context.luisResult, 'Cor');
+                bikes = await searchApi('cor', color.entidade);     
+                index = 0;
             }  
 
-            const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!'
+            const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
             await stepContext.context.sendActivity(firstMessage)
             const lastBike = await buildCard(bikes, index, stepContext)
             stepContext.values.bikeVector = bikes
             stepContext.values.last = lastBike.lastPos
 
             return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions([
-                '\n\nVer mais informações', '\n\nVer próxima bike', '\n\nExplorar outro filtro de pesquisa']));
-            
+                'Ver mais informações', 'Ver próxima bike', 'Explorar outro filtro de pesquisa'
+            ]));            
         }
         
         async confirmStep(stepContext) {
@@ -101,9 +100,11 @@ class ColorDialog extends CancelAndHelpDialog {
                 case 'MaisInfo': {                    
                    const info =`Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`               
                    
-                   await stepContext.context.sendActivity(info)
-                   break
+                   await stepContext.context.sendActivity(info);
+                   break;
                   
+                } case 'OutroFiltro': {
+                    return await stepContext.beginDialog('MainDialog');
                 }
                 default: {                
                     const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
@@ -114,17 +115,9 @@ class ColorDialog extends CancelAndHelpDialog {
         }
 
     async finalStep(stepContext) {
-        if (stepContext.result === true) {
-            const bookingDetails = stepContext.options;
-            return await stepContext.endDialog(bookingDetails);
-        }
-        return await stepContext.endDialog();
+        
     }
 
-    isAmbiguous(timex) {
-        const timexPropery = new TimexProperty(timex);
-        return !timexPropery.types.has('definite');
-    }
 }
 
 module.exports.ColorDialog = ColorDialog;
