@@ -12,7 +12,7 @@ const buildCard = async (bike, index, stepContext) => {
         const card = CardFactory.heroCard(
                 ``,
                 [`${ bike[pos].image }`],
-                        '',
+                '',
         );
         const info = `Nome: ${ bike[pos].name } \n\n Marca: ${ bike[pos].brand } \n\n Preço: R$ ${ bike[pos].price.toString() }\n\n ${ noMoreBikes }`;
         const message = MessageFactory.attachment(card);
