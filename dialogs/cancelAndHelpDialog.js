@@ -13,11 +13,12 @@ class CancelAndHelpDialog extends ComponentDialog {
         if (innerDc.context.activity.text) {
             const text = innerDc.context.activity.text.toLowerCase();
             switch (text) {
-            case 'ajuda':
+            // case 'ajuda': {}
+            // case 'Explorar outro filtro de pesquisa':
             case 'menu': {
                 return await innerDc.beginDialog('MainDialog');
             }
-            case 'sair':
+            // case 'sair': {}
             case 'cancelar': {
                 const cancelMessageText = 'Cancelando....';
                 await innerDc.context.sendActivity(cancelMessageText, cancelMessageText, InputHints.IgnoringInput);

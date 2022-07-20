@@ -1,23 +1,23 @@
 const { InputHints, MessageFactory } = require('botbuilder');
-const { LuisRecognizer } = require('botbuilder-ai');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
-const { buildCard } = require('../services/buildCard');
-const { searchApi } = require('../services/apiCall');
+const { LuisRecognizer } = require('botbuilder-ai');
 const { getEntities } = require('../services/recognizer');
+const { searchApi } = require('../services/apiCall');
+const { buildCard } = require('../services/buildCard');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
-class GenderDialog extends CancelAndHelpDialog {
+class PriceDialog extends CancelAndHelpDialog {
     constructor(id, luisRecognizer) {
-        super(id || 'genderDialog');
-
+        super(id || 'priceDialog');
+        if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
         this.luisRecognizer = luisRecognizer;
+
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
-
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.actStep.bind(this),
                 this.callStep.bind(this),
@@ -37,10 +37,12 @@ class GenderDialog extends CancelAndHelpDialog {
             return await stepContext.next();
         }
         if (!bikeVector) {
-            const Message = 'Legal! Então me diz para quem é a magrela que você está procurando? 🚲';
+            const firstMessage = 'Quanto você pretende investir na sua bicicleta? 🚴\nEscolha entre as faixas de preço abaixo:';
+            await stepContext.context.sendActivity(firstMessage);
 
-            await stepContext.context.sendActivity(Message);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Unissex', 'Masculino', 'Feminina', 'Explorar outro filtro de pesquisa']));
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Até R$ 500,00', 'De R$ 500,00 até R$ 1500,00', 'De R$ 1500,00 até R$ 3000,00', 'Mais de R$ 3000,00', 'Explorar outro filtro']
+            ));
         }
         return await stepContext.next();
     }
@@ -52,10 +54,17 @@ class GenderDialog extends CancelAndHelpDialog {
         let index = last + 1;
 
         if (!bikeVector) {
-            const genero = getEntities(stepContext.context.luisResult, 'Genero');
-            bikes = await searchApi('Genero', genero.entidade);
+            const price = getEntities(stepContext.context.luisResult, 'builtin.number');
+            bikes = await searchApi('preco', price.entidade);
+            console.log(bikes);
             index = 0;
         }
+
+        const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
+        await stepContext.context.sendActivity(firstMessage);
+
+        console.log(stepContext.context.luisResult);
+        console.log(stepContext.values);
 
         const lastBike = await buildCard(bikes, index, stepContext);
         stepContext.values.bikeVector = bikes;
@@ -64,7 +73,7 @@ class GenderDialog extends CancelAndHelpDialog {
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
             ['Ver mais informações', 'Ver próxima bike', 'Explorar outro filtro de pesquisa']
         ));
-    }
+    };
 
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
@@ -98,7 +107,8 @@ class GenderDialog extends CancelAndHelpDialog {
     }
 
     async finalStep(stepContext) {
+
     }
 }
 
-module.exports.GenderDialog = GenderDialog;
+module.exports.PriceDialog = PriceDialog;
