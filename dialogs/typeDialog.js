@@ -5,6 +5,9 @@ const { MessageFactory, InputHints, CardFactory } = require('botbuilder');
 const { getEntities } = require('../services/recognizer');
 const { searchApi } = require('../services/apiCall');
 const { buildCard } = require('../services/buildCard');
+const { InputHints, MessageFactory } = require('botbuilder');
+const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
+const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';

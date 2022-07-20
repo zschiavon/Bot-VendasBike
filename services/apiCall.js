@@ -9,8 +9,8 @@ try {
         case 'preco':
             filtrado = await response.data.filter(bike => { return bike.price <= value })            
         break;    
-        case 'gênero':
-            filtrado = await response.data.filter(bike => { return bike.gender == value })            
+        case 'genero':
+            filtrado = await response.data.filter(bike => { return bike.gender == value})            
         break;    
         case 'tipo':
             filtrado = await response.data.filter(bike => { return bike.type == value })            
