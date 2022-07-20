@@ -20,9 +20,9 @@ const {
 const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { TypeDialog } = require('./dialogs/typeDialog');
-const { PriceDialog } = require('./dialogs/priceDialog');
+const { ColorDialog } = require('./dialogs/colorDialog');
 const TYPE_DIALOG = 'typeDialog';
-const PRICE_DIALOG = 'priceDialog';
+const COLOR_DIALOG = 'colorDialog'
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -66,9 +66,9 @@ const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
 const typeDialog = new TypeDialog(TYPE_DIALOG, dispatchRecognizer);
-const priceDialog = new PriceDialog(PRICE_DIALOG, dispatchRecognizer);
-const dialog = new MainDialog(dispatchRecognizer, typeDialog, priceDialog);
-const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
+const colorDialog = new ColorDialog(COLOR_DIALOG, dispatchRecognizer)
+const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog);
+const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
