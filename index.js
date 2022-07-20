@@ -21,8 +21,11 @@ const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { TypeDialog } = require('./dialogs/typeDialog');
 const { GenderDialog } = require('./dialogs/genderDialogs');
+const {CancelAndHelpDialog} = require('./dialogs/cancelAndHelpDialog')
 const TYPE_DIALOG = 'typeDialog';
 const GENDER_DIALOG = 'genderDialog';
+const HELP_DIALOG = 'cancelandHelpDialog';
+
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -72,9 +75,10 @@ const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
 const typeDialog = new TypeDialog(TYPE_DIALOG,dispatchRecognizer);
+const cancelandHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer)
 const genderDialog = new GenderDialog(GENDER_DIALOG,dispatchRecognizer);
 const dialog = new MainDialog(dispatchRecognizer, typeDialog, genderDialog);
-const bot = new DialogAndWelcomeBot(conversationState, userState, dialog);
+const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 
 const server = restify.createServer();

@@ -3,98 +3,122 @@ const { InputHints, MessageFactory } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
-const axios = require('axios')
-
+const { buildCard } = require('../services/buildCard')
+const { searchApi } = require('../services/apiCall')
+const { getEntities } = require('../services/recognizer')
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class GenderDialog extends CancelAndHelpDialog {
-    constructor(id,luisRecognizer) {
+    constructor(id, luisRecognizer) {
         super(id || 'genderDialog');
-        
+
         this.luisRecognizer = luisRecognizer
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
+
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
                 this.secondStep.bind(this),
                 this.travelDateStep.bind(this),
                 this.confirmStep.bind(this),
                 this.finalStep.bind(this)
-            ]));        
+            ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
     }
 
     async firstStep(stepContext) {
+        const { bikeVector, last } = stepContext.options
+
+        console.log(bikeVector);
+
 
         if (!this.luisRecognizer) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
             return await stepContext.next();
         }
+        if (!bikeVector) {
+            const Message = 'Legal! Então me diz para quem é a magrela que você está procurando? 🚲'
 
-        const Message = 'Legal! Então me diz para quem é a magrela que você está procurando? 🚲'       
-
-        await stepContext.context.sendActivity(Message)
-        return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions(['Unissex', 'Masculino', 'Feminina', 'Explorar outro filtro de pesquisa']) );
+            await stepContext.context.sendActivity(Message)
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Unissex', 'Masculino', 'Feminina', 'Explorar outro filtro de pesquisa']));
+        }
+        return await stepContext.next();
     }
 
 
     async secondStep(stepContext) {
-        const messageText = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
-        await stepContext.context.sendActivity(messageText)
+
+        const { bikeVector, last } = stepContext.options
+
+        let bikes = bikeVector
+        let index = last + 1
+        console.log(index);
+
+
+        if (!bikeVector) {
+            let genero = getEntities(stepContext.context.luisResult, "Genero")
+            bikes = await searchApi("Genero", genero.entidade)
+            index = 0
+
+        }
+
+        let lastBike = await buildCard(bikes, index, stepContext)
+        stepContext.values.bikeVector = bikes
+        stepContext.values.last = lastBike.lastPos        
+        return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Mais informações sobre a bicicleta', 'Ver proxima opção de bicicleta', 'Explorar outro filtro de pesquisa']));
+
+    }
+
+    async travelDateStep(stepContext) {
+        const { bikeVector, last } = stepContext.options
+
+        if (!this.luisRecognizer) {
+            return await stepContext.beginDialog('typeDialog');
+        }
+
+        switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
+            case 'MaisInfo': {
+                console.log("estou no mais info");
+                const info =`Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`
+                const wish = 'Gostaria de comprar esta bicicleta agora?'
+
+                await stepContext.context.sendActivity(info) 
+                await stepContext.context.sendActivity(wish) 
+                return await stepContext.prompt(TEXT_PROMPT, '');
+            }
+            case 'ProximaBike': {
+                console.log("proximabike");
+                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last })
+
+            }
+            case 'OutroFiltro': {
+                return await stepContext.beginDialog('genderDialog');
+
+            }
+            default: {
+                const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
+                await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
+            }
+        }
+
         return await stepContext.next();
     }
 
-     //     console.log(luisResult);
-    //     const procura = "Preto"
-    //     const messageText = 'Fluxo de filtro por genero';
-    //     await stepContext.context.sendActivity(messageText)
-
-    //     const response = await axios.get('https://pb-bikes-api.herokuapp.com/bike/list')
-    //     const filtrado = response.data.filter((a, index) => {
-
-    //         if (a.color == procura) {
-    //             return a.type
-
-    //         }
-    //     })
-    //    // console.log(filtrado);
-
-    async travelDateStep(stepContext) {
-        const bookingDetails = stepContext.options;
-
-        bookingDetails.origin = stepContext.result;
-        if (!bookingDetails.travelDate || this.isAmbiguous(bookingDetails.travelDate)) {
-            return await stepContext.beginDialog(DATE_RESOLVER_DIALOG, { date: bookingDetails.travelDate });
-        }
-        return await stepContext.next(bookingDetails.travelDate);
-    }
-
     async confirmStep(stepContext) {
-        const bookingDetails = stepContext.options;
 
-        bookingDetails.travelDate = stepContext.result;
-        const messageText = `Please confirm, I have you traveling to: ${bookingDetails.destination} from: ${bookingDetails.origin} on: ${bookingDetails.travelDate}. Is this correct?`;
-        const msg = MessageFactory.text(messageText, messageText, InputHints.ExpectingInput);
-
-        return await stepContext.prompt(CONFIRM_PROMPT, { prompt: msg });
     }
 
     async finalStep(stepContext) {
-        if (stepContext.result === true) {
-            const bookingDetails = stepContext.options;
-            return await stepContext.endDialog(bookingDetails);
-        }
-        return await stepContext.endDialog();
+
     }
 
     isAmbiguous(timex) {
-        const timexPropery = new TimexProperty(timex);
-        return !timexPropery.types.has('definite');
+
     }
 }
 
