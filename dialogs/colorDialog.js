@@ -61,28 +61,17 @@ class ColorDialog extends CancelAndHelpDialog {
         return await stepContext.next();
     }
 
-<<<<<<< HEAD
-    async callStep(stepContext) {            
-            const {bikeVector, last} = stepContext.options
-=======
         async callStep(stepContext) {            
             const { bikeVector, last } = stepContext.options;
->>>>>>> develop
             
             let bikes = bikeVector
             let index = last + 1          
             
-<<<<<<< HEAD
-            if(!bikeVector){ 
-                bikes = await searchApi('cor', stepContext.result.entidade)        
-                index = 0 
-=======
 
             if(!bikeVector){  
                 const color = getEntities(stepContext.context.luisResult, 'Cor');
                 bikes = await searchApi('cor', color.entidade);     
                 index = 0;
->>>>>>> develop
             }  
 
             const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
@@ -107,16 +96,10 @@ class ColorDialog extends CancelAndHelpDialog {
                 }
                 case 'MaisInfo': {                    
                    const info =`Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`               
-<<<<<<< HEAD
                    const wish = 'Gostaria de comprar esta bicicleta agora?'
                    await stepContext.context.sendActivity(info)
                    await stepContext.context.sendActivity(wish)
                    return await stepContext.prompt(TEXT_PROMPT, '');
-=======
-                   
-                   await stepContext.context.sendActivity(info);
-                   break;
->>>>>>> develop
                   
                 } case 'OutroFiltro': {
                     return await stepContext.beginDialog('MainDialog');
@@ -147,7 +130,6 @@ class ColorDialog extends CancelAndHelpDialog {
             }
 
     async finalStep(stepContext) {
-<<<<<<< HEAD
         let message = 'EM DESENVOLVIMENTO'
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'ProximaBike': {                
@@ -172,11 +154,6 @@ class ColorDialog extends CancelAndHelpDialog {
     }
 
         
-=======
-        
-    }
-
->>>>>>> develop
 }
 
     
