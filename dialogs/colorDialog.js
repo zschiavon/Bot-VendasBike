@@ -31,7 +31,7 @@ class ColorDialog extends CancelAndHelpDialog {
     }
 
     async colorStep(stepContext) { 
-        const {bikeVector, last} = stepContext.options
+        const { bikeVector, last } = stepContext.options;
         
         if(!bikeVector){
             const messageText = "Qual a que cor você quer para a sua bicicleta?";
@@ -44,7 +44,7 @@ class ColorDialog extends CancelAndHelpDialog {
     }
         
     async actStep(stepContext) {        
-        const {bikeVector, last} = stepContext.options
+        const { bikeVector, last } = stepContext.options
         
         if(!bikeVector){                    
             const color = getEntities(stepContext.context.luisResult, 'Cor')            
@@ -53,25 +53,39 @@ class ColorDialog extends CancelAndHelpDialog {
                 return await stepContext.next(color);           
             }  
             
-            return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions([
-                '\n\nBranca', '\n\nPreta', '\n\nAzul', '\n\nRosa', '\n\nVerde', '\n\nVermelha', '\n\nOutras cores', '\n\nExplorar outro filtro de pesquisa']));
+            return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions(
+                ['Branco', 'Preto', 'Azul', 'Rosa', 'Verde', 'Vermelho', 'Outras cores', 'Explorar outro filtro de pesquisa']
+            ));
                 
-            }
-            return await stepContext.next();
-        }
+        }      
+        return await stepContext.next();
+    }
 
+<<<<<<< HEAD
     async callStep(stepContext) {            
             const {bikeVector, last} = stepContext.options
+=======
+        async callStep(stepContext) {            
+            const { bikeVector, last } = stepContext.options;
+>>>>>>> develop
             
             let bikes = bikeVector
             let index = last + 1          
             
+<<<<<<< HEAD
             if(!bikeVector){ 
                 bikes = await searchApi('cor', stepContext.result.entidade)        
                 index = 0 
+=======
+
+            if(!bikeVector){  
+                const color = getEntities(stepContext.context.luisResult, 'Cor');
+                bikes = await searchApi('cor', color.entidade);     
+                index = 0;
+>>>>>>> develop
             }  
 
-            const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!'
+            const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
             await stepContext.context.sendActivity(firstMessage)
             const lastBike = await buildCard(bikes, index, stepContext)
 
@@ -80,8 +94,8 @@ class ColorDialog extends CancelAndHelpDialog {
             stepContext.values.finalBike = bikes[lastBike.lastPos]
 
             return await stepContext.prompt(TEXT_PROMPT,MessageFactory.suggestedActions([
-                '\n\nVer mais informações', '\n\nVer próxima bike', '\n\nExplorar outro filtro de pesquisa']));
-            
+                'Ver mais informações', 'Ver próxima bike', 'Explorar outro filtro de pesquisa'
+            ]));            
         }
         
     async confirmStep(stepContext) {
@@ -93,11 +107,19 @@ class ColorDialog extends CancelAndHelpDialog {
                 }
                 case 'MaisInfo': {                    
                    const info =`Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`               
+<<<<<<< HEAD
                    const wish = 'Gostaria de comprar esta bicicleta agora?'
                    await stepContext.context.sendActivity(info)
                    await stepContext.context.sendActivity(wish)
                    return await stepContext.prompt(TEXT_PROMPT, '');
+=======
+                   
+                   await stepContext.context.sendActivity(info);
+                   break;
+>>>>>>> develop
                   
+                } case 'OutroFiltro': {
+                    return await stepContext.beginDialog('MainDialog');
                 }
                 default: {                
                     const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
@@ -125,6 +147,7 @@ class ColorDialog extends CancelAndHelpDialog {
             }
 
     async finalStep(stepContext) {
+<<<<<<< HEAD
         let message = 'EM DESENVOLVIMENTO'
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'ProximaBike': {                
@@ -149,6 +172,11 @@ class ColorDialog extends CancelAndHelpDialog {
     }
 
         
+=======
+        
+    }
+
+>>>>>>> develop
 }
 
     

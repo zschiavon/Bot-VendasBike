@@ -21,8 +21,15 @@ const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { TypeDialog } = require('./dialogs/typeDialog');
 const { ColorDialog } = require('./dialogs/colorDialog');
+const { GenderDialog } = require('./dialogs/genderDialogs');
+const { PriceDialog } = require('./dialogs/priceDialog');
+const {CancelAndHelpDialog} = require('./dialogs/cancelAndHelpDialog')
 const TYPE_DIALOG = 'typeDialog';
-const COLOR_DIALOG = 'colorDialog'
+const COLOR_DIALOG = 'colorDialog';
+const GENDER_DIALOG = 'genderDialog';
+const PRICE_DIALOG = 'priceDialog';
+const HELP_DIALOG = 'cancelandHelpDialog';
+
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -34,7 +41,7 @@ const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
 const dispatchRecognizer = new LuisRecognizer({
     applicationId: process.env.LuisAppId,
     endpointKey: process.env.LuisAPIKey,
-    endpoint: `https://${process.env.LuisAPIHostName}.cognitiveservices.azure.com/`
+    endpoint: `https://${ process.env.LuisAPIHostName }.cognitiveservices.azure.com/`
 }, {
     includeAllIntents: true
 }, true);
@@ -43,11 +50,8 @@ const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfigura
 
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
-
 const onTurnErrorHandler = async (context, error) => {
-   
     console.error(`\n [onTurnError] unhandled error: ${ error }`);
-    
     await context.sendTraceActivity(
         'OnTurnError Trace',
         `${ error }`,
@@ -55,15 +59,12 @@ const onTurnErrorHandler = async (context, error) => {
         'TurnError'
     );
 
-    
     let onTurnErrorMessage = 'O bot encontrou um erro ou bug.';
     await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
     onTurnErrorMessage = 'Para continuar a executar este bot, corrija o código-fonte do bot.';
     await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
-    
     await conversationState.delete(context);
 };
-
 
 adapter.onTurnError = onTurnErrorHandler;
 
@@ -71,9 +72,12 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
-const typeDialog = new TypeDialog(TYPE_DIALOG, dispatchRecognizer);
-const colorDialog = new ColorDialog(COLOR_DIALOG, dispatchRecognizer)
-const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog);
+const typeDialog = new TypeDialog(TYPE_DIALOG,dispatchRecognizer);
+const colorDialog = new ColorDialog(COLOR_DIALOG,dispatchRecognizer);
+const priceDialog = new PriceDialog(PRICE_DIALOG,dispatchRecognizer);
+const cancelandHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer)
+const genderDialog = new GenderDialog(GENDER_DIALOG,dispatchRecognizer);
+const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog, genderDialog, priceDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 
@@ -86,16 +90,12 @@ server.listen(process.env.port || process.env.PORT || 3978, function() {
     console.log('\nPara falar com seu bot, abra o emulador selecione "Open Bot"');
 });
 
-
-server.post('/api/messages', async (req, res) => {    
+server.post('/api/messages', async (req, res) => {
     await adapter.process(req, res, (context) => bot.run(context));
 });
 
-
 server.on('upgrade', async (req, socket, head) => {
-   
-    const streamingAdapter = new CloudAdapter(botFrameworkAuthentication);   
+    const streamingAdapter = new CloudAdapter(botFrameworkAuthentication);
     streamingAdapter.onTurnError = onTurnErrorHandler;
     await streamingAdapter.process(req, socket, head, (context) => bot.run(context));
-
 });

@@ -1,23 +1,23 @@
 const { InputHints, MessageFactory } = require('botbuilder');
+const { LuisRecognizer } = require('botbuilder-ai');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
-const { LuisRecognizer } = require('botbuilder-ai');
-const { getEntities } = require('../services/recognizer');
-const { searchApi } = require('../services/apiCall');
 const { buildCard } = require('../services/buildCard');
+const { searchApi } = require('../services/apiCall');
+const { getEntities } = require('../services/recognizer');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
-class TypeDialog extends CancelAndHelpDialog {
+class GenderDialog extends CancelAndHelpDialog {
     constructor(id, luisRecognizer) {
-        super(id || 'typeDialog');
-        if (!luisRecognizer) throw new Error('[TypeDialog]: Missing parameter \'luisRecognizer\' is required');
-        this.luisRecognizer = luisRecognizer;
+        super(id || 'genderDialog');
 
+        this.luisRecognizer = luisRecognizer;
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
+
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.actStep.bind(this),
                 this.callStep.bind(this),
@@ -30,21 +30,17 @@ class TypeDialog extends CancelAndHelpDialog {
 
     async actStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        /* if (!this.luisRecognizer) {
+
+        if (!this.luisRecognizer) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
             return await stepContext.next();
-        } */
-
+        }
         if (!bikeVector) {
-            const messageText = 'Boa escolha! Vem comigo para selecionar a sua magrela. 🚴';
-            const messageText2 = 'Qual opção está procurando?';
+            const Message = 'Legal! Então me diz para quem é a magrela que você está procurando? 🚲';
 
-            await stepContext.context.sendActivity(messageText);
-            await stepContext.context.sendActivity(messageText2);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                'Infantil', 'Casual', 'Estrada', 'Mountain Bike', 'Elétrica', 'Explorar outro filtro'
-            ]));
+            await stepContext.context.sendActivity(Message);
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Unissex', 'Masculino', 'Feminina', 'Explorar outro filtro de pesquisa']));
         }
         return await stepContext.next();
     }
@@ -56,13 +52,11 @@ class TypeDialog extends CancelAndHelpDialog {
         let index = last + 1;
 
         if (!bikeVector) {
-            const type = getEntities(stepContext.context.luisResult, 'Tipo');
-            bikes = await searchApi('tipo', type.entidade);
+            const genero = getEntities(stepContext.context.luisResult, 'Genero');
+            bikes = await searchApi('Genero', genero.entidade);
             index = 0;
         }
 
-        const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
-        await stepContext.context.sendActivity(firstMessage);
         const lastBike = await buildCard(bikes, index, stepContext);
         stepContext.values.bikeVector = bikes;
         stepContext.values.last = lastBike.lastPos;
@@ -74,8 +68,10 @@ class TypeDialog extends CancelAndHelpDialog {
 
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        console.log(stepContext.values.last, stepContext.values.bikeVector);
-        console.log(LuisRecognizer.topIntent(stepContext.context.luisResult));
+
+        if (!this.luisRecognizer) {
+            return await stepContext.beginDialog('typeDialog');
+        }
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'MaisInfo': {
@@ -97,10 +93,12 @@ class TypeDialog extends CancelAndHelpDialog {
             await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
         }
         }
+
+        return await stepContext.next();
     }
 
     async finalStep(stepContext) {
     }
 }
 
-module.exports.TypeDialog = TypeDialog;
+module.exports.GenderDialog = GenderDialog;

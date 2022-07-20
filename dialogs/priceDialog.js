@@ -10,10 +10,10 @@ const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
-class TypeDialog extends CancelAndHelpDialog {
+class PriceDialog extends CancelAndHelpDialog {
     constructor(id, luisRecognizer) {
-        super(id || 'typeDialog');
-        if (!luisRecognizer) throw new Error('[TypeDialog]: Missing parameter \'luisRecognizer\' is required');
+        super(id || 'priceDialog');
+        if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
         this.luisRecognizer = luisRecognizer;
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
@@ -30,21 +30,19 @@ class TypeDialog extends CancelAndHelpDialog {
 
     async actStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        /* if (!this.luisRecognizer) {
+
+        if (!this.luisRecognizer) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
             return await stepContext.next();
-        } */
-
+        }
         if (!bikeVector) {
-            const messageText = 'Boa escolha! Vem comigo para selecionar a sua magrela. 🚴';
-            const messageText2 = 'Qual opção está procurando?';
+            const firstMessage = 'Quanto você pretende investir na sua bicicleta? 🚴\nEscolha entre as faixas de preço abaixo:';
+            await stepContext.context.sendActivity(firstMessage);
 
-            await stepContext.context.sendActivity(messageText);
-            await stepContext.context.sendActivity(messageText2);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                'Infantil', 'Casual', 'Estrada', 'Mountain Bike', 'Elétrica', 'Explorar outro filtro'
-            ]));
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Até R$ 500,00', 'De R$ 500,00 até R$ 1500,00', 'De R$ 1500,00 até R$ 3000,00', 'Mais de R$ 3000,00', 'Explorar outro filtro']
+            ));
         }
         return await stepContext.next();
     }
@@ -56,13 +54,18 @@ class TypeDialog extends CancelAndHelpDialog {
         let index = last + 1;
 
         if (!bikeVector) {
-            const type = getEntities(stepContext.context.luisResult, 'Tipo');
-            bikes = await searchApi('tipo', type.entidade);
+            const price = getEntities(stepContext.context.luisResult, 'builtin.number');
+            bikes = await searchApi('preco', price.entidade);
+            console.log(bikes);
             index = 0;
         }
 
         const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
         await stepContext.context.sendActivity(firstMessage);
+
+        console.log(stepContext.context.luisResult);
+        console.log(stepContext.values);
+
         const lastBike = await buildCard(bikes, index, stepContext);
         stepContext.values.bikeVector = bikes;
         stepContext.values.last = lastBike.lastPos;
@@ -70,12 +73,14 @@ class TypeDialog extends CancelAndHelpDialog {
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
             ['Ver mais informações', 'Ver próxima bike', 'Explorar outro filtro de pesquisa']
         ));
-    }
+    };
 
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        console.log(stepContext.values.last, stepContext.values.bikeVector);
-        console.log(LuisRecognizer.topIntent(stepContext.context.luisResult));
+
+        if (!this.luisRecognizer) {
+            return await stepContext.beginDialog('typeDialog');
+        }
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'MaisInfo': {
@@ -97,10 +102,13 @@ class TypeDialog extends CancelAndHelpDialog {
             await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
         }
         }
+
+        return await stepContext.next();
     }
 
     async finalStep(stepContext) {
+
     }
 }
 
-module.exports.TypeDialog = TypeDialog;
+module.exports.PriceDialog = PriceDialog;
