@@ -11,7 +11,7 @@ const getEntities = (result, criteria) => {
         case 'genero':
             value = result.entities.Genero[0];
             break;
-        case 'number':
+        case 'builtin.number':
             value = result.entities.number;
             break;
         }

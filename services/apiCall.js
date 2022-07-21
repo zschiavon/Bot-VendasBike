@@ -1,13 +1,19 @@
 const axios = require('axios');
 
-async function searchApi(filtro, value) {
+async function searchApi(filtro, value, criteria) {
     let filtrado;
     try {
         const response = await axios.get('https://pb-bikes-api.herokuapp.com/bike/list');
         switch (filtro.toLowerCase()) {
         case 'preco':
-            filtrado = await response.data.filter(bike => { return bike.price <= value; });
-            // console.log(value);
+            if (criteria) {
+                filtrado = await response.data.filter(bike => { return bike.price <= value[0]; });
+            } else if (value.length > 1) {
+                filtrado = await response.data.filter(bike => { return bike.price > value[0] && bike.price <= value[1]; });
+            } else {
+                filtrado = await response.data.filter(bike => { return bike.price > value[0]; });
+            }
+
             break;
         case 'genero':
             filtrado = await response.data.filter(bike => { return bike.gender == value; });

@@ -9,7 +9,7 @@ class MainDialog extends ComponentDialog {
         super('MainDialog');
 
         if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
-        this.luisRecognizer = luisRecognizer
+        this.luisRecognizer = luisRecognizer;
 
         if (!typeDialog) throw new Error('[MainDialog]: Missing parameter \'typeDialog\' is required');
 
@@ -25,9 +25,7 @@ class MainDialog extends ComponentDialog {
                 this.finalStep.bind(this)
             ]));
 
-
         this.initialDialogId = MAIN_WATERFALL_DIALOG;
-
     }
 
     async run(turnContext, accessor) {
@@ -42,49 +40,46 @@ class MainDialog extends ComponentDialog {
     }
 
     async firstStep(stepContext) {
-
         if (!this.luisRecognizer) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
             return await stepContext.next();
         }
 
-        const thirdMessage = "Escolha um dos filtros para pesquisar pela bicicleta: "
-        await stepContext.context.sendActivity(thirdMessage)
-        return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Tipo', 'Cor', 'Genero', 'Preço']));
-
+        const thirdMessage = 'Escolha um dos filtros para pesquisar pela bicicleta:';
+        await stepContext.context.sendActivity(thirdMessage);
+        return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+            ['Tipo', 'Cor', 'Genero', 'Preço']
+        ));
     }
 
     // dispatchToTopIntentAsync
     async actStep(stepContext) {
-
-
         if (!this.luisRecognizer) {
             return await stepContext.beginDialog('typeDialog');
         }
 
-        stepContext.context.luisResult
+        // stepContext.context.luisResult
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'FiltroTipo': {
-                return await stepContext.beginDialog('typeDialog');
-            }
-            case 'FiltroCor': {
-                return await stepContext.beginDialog('colorDialog');
-            }
-            case 'FiltroGenero': {
-                return await stepContext.beginDialog('genderDialog');
-            }
-            case 'FiltroPreco': {
-                return await stepContext.beginDialog('priceDialog');
-            }
-            default: {
-                const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
-                await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-            }
+        case 'FiltroTipo': {
+            return await stepContext.beginDialog('typeDialog');
         }
-
-        return await stepContext.next();
+        case 'FiltroCor': {
+            return await stepContext.beginDialog('colorDialog');
+        }
+        case 'FiltroGenero': {
+            return await stepContext.beginDialog('genderDialog');
+        }
+        case 'FiltroPreco': {
+            return await stepContext.beginDialog('priceDialog');
+        }
+        default: {
+            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
+            await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
+        }
+            return await stepContext.next();
+        }
     }
 
     async finalStep(stepContext) {
