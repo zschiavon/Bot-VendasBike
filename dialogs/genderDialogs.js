@@ -49,6 +49,12 @@ class GenderDialog extends CancelAndHelpDialog {
     async callStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
+        switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
+        case 'OutroFiltro': {
+            return await stepContext.beginDialog('MainDialog');
+        }
+        }
+
         let bikes = bikeVector;
         let index = last + 1;
 
@@ -70,33 +76,28 @@ class GenderDialog extends CancelAndHelpDialog {
 
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-
-        if (!this.luisRecognizer) {
-            return await stepContext.beginDialog('typeDialog');
+        switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
+        case 'ProximaBike': {
+            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
         }
 
-        switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'MaisInfo': {
             const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
             const wish = 'Gostaria de comprar esta bicicleta agora?';
-
             await stepContext.context.sendActivity(info);
             await stepContext.context.sendActivity(wish);
             return await stepContext.prompt(TEXT_PROMPT, '');
         }
-        case 'ProximaBike': {
-            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
-        }
+
         case 'OutroFiltro': {
             return await stepContext.beginDialog('MainDialog');
         }
+
         default: {
             const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${ LuisRecognizer.topIntent(luisResult) })`;
             await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
         }
         }
-
-        return await stepContext.next();
     }
 
     async decisionStep(stepContext) {
@@ -134,6 +135,8 @@ class GenderDialog extends CancelAndHelpDialog {
 
 
         }
+
+       
     }
 }
 
