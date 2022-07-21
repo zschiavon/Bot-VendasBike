@@ -61,6 +61,7 @@ class GenderDialog extends CancelAndHelpDialog {
         const lastBike = await buildCard(bikes, index, stepContext);
         stepContext.values.bikeVector = bikes;
         stepContext.values.last = lastBike.lastPos;
+        stepContext.values.finalBike = bikes[lastBike.lastPos];
 
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
             ['Ver mais informações', 'Ver próxima bike', 'Explorar outro filtro de pesquisa']
@@ -103,7 +104,7 @@ class GenderDialog extends CancelAndHelpDialog {
             const message = 'O que você deseja fazer então?'
             await stepContext.context.sendActivity(message)
             return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                '\n\nVer próxima bike', '\n\nExplorar outro filtro de pesquisa', '\n\nEncerrar']));
+                'Ver próxima bike', 'Explorar outro filtro de pesquisa', 'Encerrar']));
         }
 
         const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`
@@ -111,20 +112,18 @@ class GenderDialog extends CancelAndHelpDialog {
         await stepContext.context.sendActivity(bikeName)
         await stepContext.context.sendActivity(message)
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-            '\n\nFinalizar pedido', '\n\nContinuar comprando.']));
+            'Finalizar pedido', 'Continuar comprando']));
     }
 
-    async finalStep(stepContext) {
-        let message = 'EM DESENVOLVIMENTO'
+    async finalStep(stepContext) {      
+      
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'ProximaBike': {
                 return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last })
             }
             case 'FinalizarPedido': {
-                await stepContext.context.sendActivity(message)
-                break
+                return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector,last: stepContext.values.last, nameBike: stepContext.values.finalBike.name});                
             }
-
             case 'Continuar': {
                 await stepContext.context.sendActivity(message)
                 break
