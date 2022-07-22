@@ -127,8 +127,7 @@ class TypeDialog extends CancelAndHelpDialog {
             return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
         }
         case 'FinalizarPedido': {
-            await stepContext.context.sendActivity(message);
-            break;
+            return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, nameBike: stepContext.values.finalBike.name });
         }
 
         case 'Continuar': {

@@ -11,6 +11,9 @@ const getEntities = (result, criteria) => {
         case 'genero':
             value = result.entities.Genero[0];
             break;
+        case 'maxValue':
+            value = result.entities.maxValue[0];
+            break;
         case 'builtin.number':
             value = result.entities.number;
             break;

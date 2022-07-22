@@ -58,17 +58,21 @@ class PriceDialog extends CancelAndHelpDialog {
         let index = last + 1;
 
         if (!bikeVector) {
+            // const maximo = getEntities(stepContext.context.luisResult, 'maxValue');
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
+
+            // console.log(maximo, price);
+            // if (maximo != undefined) {
+            //     bikes = await searchApi('preco', price.entidade, maximo.entidade);
+            // } else {
             bikes = await searchApi('preco', price.entidade);
+            // }
             console.log(bikes);
             index = 0;
         }
 
         const firstMessage = 'Tenho certeza que você vai gostar das bikes que eu encontrei!';
         await stepContext.context.sendActivity(firstMessage);
-
-        console.log(stepContext.context.luisResult);
-        console.log(stepContext.values);
 
         const lastBike = await buildCard(bikes, index, stepContext);
         stepContext.values.bikeVector = bikes;
@@ -137,8 +141,7 @@ class PriceDialog extends CancelAndHelpDialog {
             return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last })
         }
         case 'FinalizarPedido': {
-            await stepContext.context.sendActivity(message);
-            break;
+            return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, nameBike: stepContext.values.finalBike.name });
         }
 
         case 'Continuar': {
