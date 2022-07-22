@@ -21,7 +21,8 @@ class FinishDialog extends CancelAndHelpDialog{
     }
 
     async avaliationStep(stepContext){
-        const firstMessage = 'Antes de encerrar, eu gostaria de saber se foi tudo bem na nossa conversa ou se em algum momento o meu pneu furou...'            
+        const firstMessage = 'Antes de encerrar, eu gostaria de saber se foi tudo bem na nossa conversa ou se em algum momento o meu pneu furou...'
+        await stepContext.sendActivity(firstMessage)            
 
         return await stepContext.prompt(CHOICE_PROMPT, {
             prompt: 'Como avalia meu atendimento?',
