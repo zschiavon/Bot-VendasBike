@@ -23,13 +23,17 @@ const { TypeDialog } = require('./dialogs/typeDialog');
 const { ColorDialog } = require('./dialogs/colorDialog');
 const { GenderDialog } = require('./dialogs/genderDialogs');
 const { PriceDialog } = require('./dialogs/priceDialog');
+const { FinishDialog } = require('./dialogs/finishDialog');
+
 const {CancelAndHelpDialog} = require('./dialogs/cancelAndHelpDialog')
 const {PurchaseData} = require('./dialogs/purchaseData')
+
 const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
 const GENDER_DIALOG = 'genderDialog';
 const PRICE_DIALOG = 'priceDialog';
 const HELP_DIALOG = 'cancelandHelpDialog';
+const FINISH_DIALOG = 'finishDialog';
 const PURCHASEDATA_DIALOG = 'purchaseData'
 
 
@@ -73,6 +77,8 @@ adapter.onTurnError = onTurnErrorHandler;
 const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
+
+const finishDialog = new FinishDialog(FINISH_DIALOG);
 
 const typeDialog = new TypeDialog(TYPE_DIALOG,dispatchRecognizer);
 const colorDialog = new ColorDialog(COLOR_DIALOG,dispatchRecognizer);
