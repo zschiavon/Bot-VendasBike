@@ -59,7 +59,7 @@ class PriceDialog extends CancelAndHelpDialog {
 
         if (!bikeVector) {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
-            bikes = await searchApi('preco', price.entidade);
+            bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
             console.log(bikes);
             index = 0;
         }
