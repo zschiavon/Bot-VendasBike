@@ -32,7 +32,7 @@ class GenderDialog extends CancelAndHelpDialog {
     async actStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
-        if (!this.luisRecognizer) {
+        if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
             return await stepContext.next();
@@ -123,7 +123,7 @@ class GenderDialog extends CancelAndHelpDialog {
                 return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last })
             }
             case 'FinalizarPedido': {
-                return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector,last: stepContext.values.last, nameBike: stepContext.values.finalBike.name});                
+                return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector,last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name});                
             }
             case 'Continuar': {
                 await stepContext.context.sendActivity(message)
@@ -139,5 +139,4 @@ class GenderDialog extends CancelAndHelpDialog {
        
     }
 }
-
 module.exports.GenderDialog = GenderDialog;

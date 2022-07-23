@@ -13,9 +13,8 @@ const WATERFALL_DIALOG = 'waterfallDialog';
 class PriceDialog extends CancelAndHelpDialog {
     constructor(id, luisRecognizer) {
         super(id || 'priceDialog');
-        if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
+       
         this.luisRecognizer = luisRecognizer;
-
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -31,7 +30,7 @@ class PriceDialog extends CancelAndHelpDialog {
     async actStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
-        if (!this.luisRecognizer) {
+        if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
             return await stepContext.next();
@@ -85,7 +84,7 @@ class PriceDialog extends CancelAndHelpDialog {
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
-        if (!this.luisRecognizer) {
+        if (!stepContext.context.luisResult) {
             return await stepContext.beginDialog('typeDialog');
         }
 
