@@ -49,10 +49,8 @@ class PriceDialog extends CancelAndHelpDialog {
     async callStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
-        switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'OutroFiltro': {
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'OutroFiltro') {
             return await stepContext.beginDialog('MainDialog');
-        }
         }
 
         let bikes = bikeVector;
@@ -60,7 +58,7 @@ class PriceDialog extends CancelAndHelpDialog {
 
         if (!bikeVector) {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
-            bikes = await searchApi('preco', price.entidade);
+            bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
             console.log(bikes);
             index = 0;
         }

@@ -159,22 +159,26 @@ class PurchaseData extends CancelAndHelpDialog {
             cpf,
             telefone
         }
-        console.log(zipeVector);
+       
         const messageCase = "Para finalizarmos a compra confirme seus dados"
         const messageCase1 = "dados informados"
+        const messageCase2 = "Todos os dados estão corretos?"
         await stepContext.context.sendActivity(messageCase);
         await stepContext.context.sendActivity(messageCase1);
         const lastBike = await buildCardData(zipeVector, informacoes, stepContext);
-        return await stepContext.prompt(TEXT_PROMPT, 'Todos os dados estão corretos?');
+        await stepContext.context.sendActivity(messageCase2);
+        return await stepContext.prompt(TEXT_PROMPT, '');
+        
     }
 
     async finalStep(stepContext) {
+        console.log(LuisRecognizer.topIntent(stepContext.context.luisResult));
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'Utilities_Confirm': {
                 const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 65536)}.`                
                 await stepContext.context.sendActivity(finalMessage);               
 
-                return await stepContext.beginDialog('purchaseData');
+                return await stepContext.beginDialog('finishDialog');
             }
             case 'utili': {
                 return await stepContext.replaceDialog(this.initialDialogId)
