@@ -1,12 +1,13 @@
 const axios = require('axios');
+const { LuisRecognizer } = require('botbuilder-ai');
 
-async function searchApi(filtro, value) {
+async function searchApi(filtro, value, stepContext) {
     let filtrado;
     try {
         const response = await axios.get('https://pb-bikes-api.herokuapp.com/bike/list');
         switch (filtro.toLowerCase()) {
         case 'preco':
-            if (value.length == 1 && value <= 500 || value.length == 1 && value < 1500) {
+            if (stepContext.entities.Maxvalue && value.length == 1) {
                 filtrado = await response.data.filter(bike => { return bike.price <= value[0]; });
             } else if (value.length > 1) {
                 filtrado = await response.data.filter(bike => { return bike.price > value[0] && bike.price <= value[1]; });

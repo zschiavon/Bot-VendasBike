@@ -60,13 +60,7 @@ class PriceDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             // const maximo = getEntities(stepContext.context.luisResult, 'maxValue');
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
-
-            // console.log(maximo, price);
-            // if (maximo != undefined) {
-            //     bikes = await searchApi('preco', price.entidade, maximo.entidade);
-            // } else {
-            bikes = await searchApi('preco', price.entidade);
-            // }
+            bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
             console.log(bikes);
             index = 0;
         }
