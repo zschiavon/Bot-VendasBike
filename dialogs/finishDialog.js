@@ -7,14 +7,16 @@ const CHOICE_PROMPT = 'choicePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class FinishDialog extends CancelAndHelpDialog {
-    constructor(id) {
-        super(id || 'finishDialog')
+    constructor(id, luisRecognizer) {
+        super(id || 'finishDialog');
 
+        this.luisRecognizer = luisRecognizer;
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
-            .addDialog(new WaterfallDialog(WATERFALL_DIALOG),[
+            .addDialog(new WaterfallDialog(WATERFALL_DIALOG), [
                 this.avaliationStep.bind(this),
-                this.finalStep.bind()
+                this.finalStep.bind(),
+                this.feedbackStep.bind()
             ]);
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -22,7 +24,7 @@ class FinishDialog extends CancelAndHelpDialog {
 
     async avaliationStep(stepContext) {
         const firstMessage = 'Antes de encerrar, eu gostaria de saber se foi tudo bem na nossa conversa ou se em algum momento o meu pneu furou...'
-        await stepContext.sendActivity(firstMessage);
+        await stepContext.sendActivity(firstMessage)
 
         return await stepContext.prompt(CHOICE_PROMPT, {
             prompt: 'Como avalia meu atendimento?',
@@ -41,7 +43,7 @@ class FinishDialog extends CancelAndHelpDialog {
         const result = avaliation.some(a => a < 3);
 
         if (result) {
-            return await stepContext.prompt(TEXT_PROMPT, `Que pena! ${ String.fromCodePoint(0x1F61E) }; 
+            return await stepContext.prompt(TEXT_PROMPT, `Que pena! ${ String.fromCodePoint(0x1F61E) } 
             Lamento não ter atingido suas expectativas! Como meu atendimento poderia ser melhor?`);
         } else {
             const thankMessage = `Muito obrigado pela avaliação! ${ String.fromCodePoint(0x1F44D) }\n Adorei falar com você!`;

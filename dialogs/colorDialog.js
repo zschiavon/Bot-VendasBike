@@ -12,9 +12,8 @@ const WATERFALL_DIALOG = 'waterfallDialog';
 class ColorDialog extends CancelAndHelpDialog {
     constructor(id, luisRecognizer) {
         super(id || 'colorDialog');
-        if (!luisRecognizer) throw new Error('[ColorDialog]: Missing parameter \'luisRecognizer\' is required');
-        this.luisRecognizer = luisRecognizer;
 
+        this.luisRecognizer = luisRecognizer;
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -58,6 +57,7 @@ class ColorDialog extends CancelAndHelpDialog {
     async callStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
+
         if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'OutroFiltro') {
             return await stepContext.beginDialog('MainDialog');
         }
@@ -85,14 +85,14 @@ class ColorDialog extends CancelAndHelpDialog {
     }
 
     async confirmStep(stepContext) {
-        const {bikeVector, last} = stepContext.options;
+        const { bikeVector, last } = stepContext.options;
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'ProximaBike': {
             return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
         }
 
         case 'MaisInfo': {
-            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+            const info = `Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`;
             const wish = 'Gostaria de comprar esta bicicleta agora?';
             await stepContext.context.sendActivity(info);
             await stepContext.context.sendActivity(wish);
@@ -104,7 +104,7 @@ class ColorDialog extends CancelAndHelpDialog {
         }
 
         default: {
-            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${ LuisRecognizer.topIntent(luisResult) })`;
+            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
             await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
         }
         }
@@ -119,7 +119,7 @@ class ColorDialog extends CancelAndHelpDialog {
             ));
         }
 
-        const bikeName = `${ stepContext.values.finalBike.name } foi adicionada ao carrinho de compras`;
+        const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`;
         const message = 'O que você deseja fazer agora?';
 
         await stepContext.context.sendActivity(bikeName);
@@ -130,7 +130,6 @@ class ColorDialog extends CancelAndHelpDialog {
     }
 
     async finalStep(stepContext) {
-        let message = 'EM DESENVOLVIMENTO';
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'ProximaBike': {
             return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
