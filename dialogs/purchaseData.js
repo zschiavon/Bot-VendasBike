@@ -1,6 +1,6 @@
 const { InputHints, MessageFactory } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
-const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
+const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const axios = require('axios');
 const { buildCardData } = require('../services/buildCardData');
@@ -9,6 +9,7 @@ const { getEntities } = require('../services/recognizer');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
+const CHOICE_PROMPT = 'choicePrompt'
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class PurchaseData extends CancelAndHelpDialog {
@@ -18,6 +19,7 @@ class PurchaseData extends CancelAndHelpDialog {
         this.luisRecognizer = luisRecognizer;
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
+            .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.actStep.bind(this),
                 this.callStep.bind(this),
@@ -25,9 +27,10 @@ class PurchaseData extends CancelAndHelpDialog {
                 this.decisionStep.bind(this),
                 this.complementStep.bind(this),
                 this.nameStep.bind(this),
-                this.cpfStep.bind(this),                
-                this.phoneStep.bind(this),                
-                this.dataStep.bind(this)               
+                this.cpfStep.bind(this),
+                this.phoneStep.bind(this),
+                this.dataStep.bind(this),
+                this.finalStep.bind(this)
             ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -103,12 +106,11 @@ class PurchaseData extends CancelAndHelpDialog {
             return await stepContext.prompt(TEXT_PROMPT, '');
         }
 
-               
+
     }
 
     async complementStep(stepContext) {
         stepContext.values.numberHouse = stepContext.result
-        console.log(stepContext.values.numberHouse);
 
         const messageCase = "Se for o caso informe o complemento"
         await stepContext.context.sendActivity(messageCase);
@@ -158,8 +160,8 @@ class PurchaseData extends CancelAndHelpDialog {
             name,
             cpf,
             telefone
-        }
-       
+        }       
+
         const messageCase = "Para finalizarmos a compra confirme seus dados"
         const messageCase1 = "dados informados"
         const messageCase2 = "Todos os dados estão corretos?"
@@ -168,27 +170,29 @@ class PurchaseData extends CancelAndHelpDialog {
         const lastBike = await buildCardData(zipeVector, informacoes, stepContext);
         await stepContext.context.sendActivity(messageCase2);
         return await stepContext.prompt(TEXT_PROMPT, '');
-        
+
+
     }
 
     async finalStep(stepContext) {
         console.log(LuisRecognizer.topIntent(stepContext.context.luisResult));
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'Utilities_Confirm': {
-                const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 65536)}.`                
-                await stepContext.context.sendActivity(finalMessage);               
-
+                const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: 12345.`
+                await stepContext.context.sendActivity(finalMessage);
                 return await stepContext.beginDialog('finishDialog');
             }
             case 'utili': {
-                return await stepContext.replaceDialog(this.initialDialogId)
+                console.log('aqui ');
+                //return await stepContext.replaceDialog(this.initialDialogId)
             }
             case 'Continuar': {
                 await stepContext.context.sendActivity(message)
                 break
             }
             default: {
-                await stepContext.context.sendActivity(message);
+                console.log('cusco');
+               // await stepContext.context.sendActivity(message);
             }
         }
     }
