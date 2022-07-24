@@ -11,10 +11,8 @@ const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class TypeDialog extends CancelAndHelpDialog {
-    constructor(id, luisRecognizer) {
-        super(id || 'typeDialog');
-        if (!luisRecognizer) throw new Error('[TypeDialog]: Missing parameter \'luisRecognizer\' is required');
-        this.luisRecognizer = luisRecognizer;
+    constructor(id) {
+        super(id || 'typeDialog');       
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
