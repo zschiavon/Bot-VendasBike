@@ -1,8 +1,8 @@
 {
-    "name": "core-bot",
+    "name": "bike-vendas-bot",
     "version": "1.0.0",
-    "description": "A bot that demonstrates core AI capabilities",
-    "author": "Microsoft",
+    "description": "Bot para venda de bicicletas",
+    "author": "Amira Ahmad, Isadora Brito, Juan Schiavon e Ramon Rocha",
     "license": "MIT",
     "main": "index.js",
     "scripts": {
