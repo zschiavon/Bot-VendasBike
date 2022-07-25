@@ -5,7 +5,7 @@ const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialo
 const TEXT_PROMPT = 'TEXT_PROMPT';
 const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 class MainDialog extends ComponentDialog {
-    constructor( typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog) {
+    constructor( typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog, gatherAdress) {
         super('MainDialog');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT));
@@ -18,6 +18,7 @@ class MainDialog extends ComponentDialog {
             .addDialog(finishDialog)
             .addDialog(fallbackDialog)
             .addDialog(cancelAndHelpDialog)
+            .addDialog(gatherAdress)
             .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
                 this.actStep.bind(this)

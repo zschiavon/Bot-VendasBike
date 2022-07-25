@@ -15,7 +15,7 @@ const WATERFALL_DIALOG = 'waterfallDialog';
 class PurchaseData extends CancelAndHelpDialog {
     constructor(id) {
         super(id || 'purchaseData');
-        
+
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
@@ -95,7 +95,7 @@ class PurchaseData extends CancelAndHelpDialog {
 
         } catch (error) {
             console.log(`não`);
-            return await stepContext.prompt(TEXT_PROMPT, '');
+            return await stepContext.beginDialog('gatherAdress');
         }
 
 
@@ -103,7 +103,7 @@ class PurchaseData extends CancelAndHelpDialog {
 
     async complementStep(stepContext) {
         stepContext.values.numberHouse = stepContext.result
-
+        console.log(stepContext.values.numberHouse);
         const messageCase = "Se for o caso informe o complemento"
         await stepContext.context.sendActivity(messageCase);
 
@@ -140,12 +140,12 @@ class PurchaseData extends CancelAndHelpDialog {
     async dataStep(stepContext) {
         stepContext.values.tefefone = stepContext.result
 
-        const zipeVector = stepContext.values.zipeVector
+        let zipeVector = stepContext.values.zipeVector
         const numberHouse = stepContext.values.numberHouse
         const complemento = stepContext.values.complemento
         const name = stepContext.values.name
         const cpf = stepContext.values.cpf
-        const telefone = stepContext.values.tefefone        
+        const telefone = stepContext.values.tefefone
         const informacoes = {
             numberHouse,
             complemento,
