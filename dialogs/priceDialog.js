@@ -11,10 +11,10 @@ const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class PriceDialog extends CancelAndHelpDialog {
-    constructor(id, luisRecognizer) {
+    constructor(id) {
         super(id || 'priceDialog');
 
-        this.luisRecognizer = luisRecognizer;
+       
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
