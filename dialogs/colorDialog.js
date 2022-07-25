@@ -87,7 +87,7 @@ class ColorDialog extends CancelAndHelpDialog {
         }
 
         case 'MaisInfo': {
-            const info = `Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`;
+            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
             const wish = 'Gostaria de comprar esta bicicleta agora?';
             await stepContext.context.sendActivity(info);
             await stepContext.context.sendActivity(wish);
@@ -114,7 +114,7 @@ class ColorDialog extends CancelAndHelpDialog {
             ));
         }
 
-        const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`;
+        const bikeName = `${ stepContext.values.finalBike.name } foi adicionada ao carrinho de compras`;
         const message = 'O que você deseja fazer agora?';
 
         await stepContext.context.sendActivity(bikeName);

@@ -45,16 +45,6 @@ class TypeDialog extends CancelAndHelpDialog {
     async callStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
-<<<<<<< HEAD
-        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'OutroFiltro') {
-            return await stepContext.beginDialog('MainDialog');
-        }
-
-/*         if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
-            return await stepContext.beginDialog('fallbackDialog');
-        } */
-=======
->>>>>>> 064f2e27b1b57843523d4ed4be1ba56a0a5297bf
         let bikes = bikeVector;
         let index = last + 1;
 

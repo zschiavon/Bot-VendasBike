@@ -23,7 +23,7 @@ class FallbackDialog extends CancelAndHelpDialog {
     }
 
     async firstStep(stepContext) {
-        const Message = 'Ihhh, parece que o pneu furou... Estou com dificuldades para entender! Você poderia repetir com outras palavras? FUNCIONOUUUU';
+        const Message = 'Ihhh, parece que o pneu furou... Estou com dificuldades para entender! Você poderia repetir com outras palavras?';
         await stepContext.context.sendActivity(Message);
         return await stepContext.prompt(TEXT_PROMPT, '');
     }

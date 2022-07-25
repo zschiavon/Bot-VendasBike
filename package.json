@@ -1,13 +1,7 @@
 {
-<<<<<<< HEAD
-    "name": "vendas-bike-bot",
-    "version": "1.0.0",
-    "description": "Bot para vendas de bicicletas",
-=======
     "name": "bike-vendas-bot",
     "version": "1.0.0",
     "description": "Bot para venda de bicicletas",
->>>>>>> 064f2e27b1b57843523d4ed4be1ba56a0a5297bf
     "author": "Amira Ahmad, Isadora Brito, Juan Schiavon e Ramon Rocha",
     "license": "MIT",
     "main": "index.js",

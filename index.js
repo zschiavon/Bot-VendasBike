@@ -32,17 +32,10 @@ const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
 const GENDER_DIALOG = 'genderDialog';
 const PRICE_DIALOG = 'priceDialog';
-<<<<<<< HEAD
-const FALLBACK_DIALOG = 'fallbackDialog';
-const HELP_DIALOG = 'cancelAndHelpDialog';
-const FINISH_DIALOG = 'finishDialog';
-const PURCHASEDATA_DIALOG = 'purchaseData';
-=======
 const HELP_DIALOG = 'cancelAndHelpDialog';
 const FINISH_DIALOG = 'finishDialog';
 const PURCHASEDATA_DIALOG = 'purchaseData';
 const FALLBACK_DIALOG = 'fallbackDialog';
->>>>>>> 064f2e27b1b57843523d4ed4be1ba56a0a5297bf
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -85,17 +78,6 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
-<<<<<<< HEAD
-const typeDialog = new TypeDialog(TYPE_DIALOG);
-const colorDialog = new ColorDialog(COLOR_DIALOG);
-const priceDialog = new PriceDialog(PRICE_DIALOG);
-const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG);
-const fallbackDialog = new FallbackDialog(FALLBACK_DIALOG);
-const finishDialog = new FinishDialog(FINISH_DIALOG);
-const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG);
-const genderDialog = new GenderDialog(GENDER_DIALOG);
-const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, cancelAndHelpDialog, fallbackDialog);
-=======
 const finishDialog = new FinishDialog(FINISH_DIALOG, dispatchRecognizer);
 const fallbackDialog = new FallbackDialog(FALLBACK_DIALOG, dispatchRecognizer);
 const typeDialog = new TypeDialog(TYPE_DIALOG, dispatchRecognizer);
@@ -105,7 +87,6 @@ const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG, dispatchRecognizer);
 const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
 const genderDialog = new GenderDialog(GENDER_DIALOG, dispatchRecognizer);
 const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog);
->>>>>>> 064f2e27b1b57843523d4ed4be1ba56a0a5297bf
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = restify.createServer();
