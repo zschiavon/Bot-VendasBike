@@ -69,10 +69,10 @@ class PurchaseData extends CancelAndHelpDialog {
                 'Boleto', 'Cartão de crédito', 'Pix']));
         }
         case 'utili': {
-            return await stepContext.replaceDialog(this.initialDialogId)
+            return await stepContext.replaceDialog(this.initialDialogId);
         }
         case 'Continuar': {
-            await stepContext.context.sendActivity(message)
+            await stepContext.context.sendActivity(message);
             break;
         }
         default: {
