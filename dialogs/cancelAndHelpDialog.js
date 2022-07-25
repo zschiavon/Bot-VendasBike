@@ -1,6 +1,13 @@
 const { InputHints } = require('botbuilder');
+const { LuisRecognizer } = require('botbuilder-ai');
 const { ComponentDialog } = require('botbuilder-dialogs');
+
 class CancelAndHelpDialog extends ComponentDialog {
+    constructor(id, luisRecognizer) {
+        super(id || 'cancelAndHelpDialog');
+        this.luisRecognizer = luisRecognizer;
+    }
+
     async onContinueDialog(innerDc) {
         const result = await this.interrupt(innerDc);
         if (result) return result;
@@ -9,17 +16,16 @@ class CancelAndHelpDialog extends ComponentDialog {
 
     async interrupt(innerDc) {
         if (innerDc.context.activity.text) {
-            const text = innerDc.context.activity.text.toLowerCase();
-            switch (text) {
+            switch (LuisRecognizer.topIntent(innerDc.context.luisResult).toLowerCase()) {
             case 'ajuda':
-            case 'Explorar outro filtro de pesquisa':
+            case 'outrofiltro':
             case 'menu': return await innerDc.beginDialog('MainDialog');
             case 'sair':
             case 'cancelar': {
                 const cancelMessageText = 'Cancelando....';
                 await innerDc.context.sendActivity(cancelMessageText, cancelMessageText, InputHints.IgnoringInput);
                 return await innerDc.cancelAllDialogs();
-            }
+            } case 'none': return await innerDc.beginDialog('fallbackDialog');
             }
         }
     }

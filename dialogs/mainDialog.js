@@ -5,7 +5,7 @@ const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialo
 const TEXT_PROMPT = 'TEXT_PROMPT';
 const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 class MainDialog extends ComponentDialog {
-    constructor(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog) {
+    constructor(luisRecognizer, typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog) {
         super('MainDialog');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT));
@@ -17,6 +17,7 @@ class MainDialog extends ComponentDialog {
             .addDialog(purchaseData)
             .addDialog(finishDialog)
             .addDialog(fallbackDialog)
+            .addDialog(cancelAndHelpDialog)
             .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
                 this.actStep.bind(this)
@@ -60,7 +61,7 @@ class MainDialog extends ComponentDialog {
         case 'FiltroCor': return await stepContext.beginDialog('colorDialog');
         case 'FiltroGenero': return await stepContext.beginDialog('genderDialog');
         case 'FiltroPreco': return await stepContext.beginDialog('priceDialog');
-        // default: return await stepContext.beginDialog('fallbackDialog');
+        default: return await stepContext.beginDialog('fallbackDialog');
         }
     }
 }
