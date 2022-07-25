@@ -78,15 +78,15 @@ const memoryStorage = new MemoryStorage();
 const conversationState = new ConversationState(memoryStorage);
 const userState = new UserState(memoryStorage);
 
-const finishDialog = new FinishDialog(FINISH_DIALOG, dispatchRecognizer);
-const fallbackDialog = new FallbackDialog(FALLBACK_DIALOG, dispatchRecognizer);
-const typeDialog = new TypeDialog(TYPE_DIALOG, dispatchRecognizer);
-const colorDialog = new ColorDialog(COLOR_DIALOG, dispatchRecognizer);
-const priceDialog = new PriceDialog(PRICE_DIALOG, dispatchRecognizer);
-const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG, dispatchRecognizer);
+const finishDialog = new FinishDialog(FINISH_DIALOG);
+const fallbackDialog = new FallbackDialog(FALLBACK_DIALOG);
+const typeDialog = new TypeDialog(TYPE_DIALOG);
+const colorDialog = new ColorDialog(COLOR_DIALOG);
+const priceDialog = new PriceDialog(PRICE_DIALOG);
+const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG);
 const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
-const genderDialog = new GenderDialog(GENDER_DIALOG, dispatchRecognizer);
-const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog);
+const genderDialog = new GenderDialog(GENDER_DIALOG);
+const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = restify.createServer();
