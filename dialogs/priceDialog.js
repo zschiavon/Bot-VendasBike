@@ -50,10 +50,6 @@ class PriceDialog extends CancelAndHelpDialog {
     async callStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
-        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'OutroFiltro') {
-            return await stepContext.beginDialog('MainDialog');
-        }
-
         let bikes = bikeVector;
         let index = last + 1;
 
