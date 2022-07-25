@@ -7,14 +7,13 @@ async function searchApi(filtro, value, stepContext) {
         const response = await axios.get('https://pb-bikes-api.herokuapp.com/bike/list');
         switch (filtro.toLowerCase()) {
         case 'preco':
-            if (stepContext.entities.Maxvalue && value.length == 1) {
+            if (stepContext.entities.Maxvalue && value.length === 1) {
                 filtrado = await response.data.filter(bike => { return bike.price <= value[0]; });
             } else if (value.length > 1) {
                 filtrado = await response.data.filter(bike => { return bike.price > value[0] && bike.price <= value[1]; });
             } else {
                 filtrado = await response.data.filter(bike => { return bike.price > value[0]; });
             }
-
             break;
         case 'genero':
             filtrado = await response.data.filter(bike => { return bike.gender == value; });

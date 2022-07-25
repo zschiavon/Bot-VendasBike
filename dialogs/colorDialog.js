@@ -131,24 +131,13 @@ class ColorDialog extends CancelAndHelpDialog {
 
     async finalStep(stepContext) {
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'ProximaBike': {
-            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
+        case 'ProximaBike': return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
+        case 'Encerrar': return await stepContext.beginDialog('finishDialog');
+        case 'Continuar':
+        case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
+        case 'FinalizarPedido': return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name });
+        default: return await stepContext.beginDialog('FallbackDialog');
         }
-
-        case 'FinalizarPedido': {
-            await stepContext.context.sendActivity(message);
-            break;
-        }
-
-        case 'Continuar': {
-            await stepContext.context.sendActivity(message);
-            break;
-        }
-
-        default: {
-            await stepContext.context.sendActivity(message);
-        }
-        };
     }
 }
 

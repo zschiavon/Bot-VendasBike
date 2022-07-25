@@ -21,21 +21,21 @@ const { DialogAndWelcomeBot } = require('./bots/dialogAndWelcomeBot');
 const { MainDialog } = require('./dialogs/mainDialog');
 const { TypeDialog } = require('./dialogs/typeDialog');
 const { ColorDialog } = require('./dialogs/colorDialog');
-const { GenderDialog } = require('./dialogs/genderDialogs');
+const { GenderDialog } = require('./dialogs/genderDialog');
 const { PriceDialog } = require('./dialogs/priceDialog');
 const { FinishDialog } = require('./dialogs/finishDialog');
-
-const {CancelAndHelpDialog} = require('./dialogs/cancelAndHelpDialog')
-const {PurchaseData} = require('./dialogs/purchaseData')
+const { FallbackDialog } = require('./dialogs/fallbackDialog');
+const { CancelAndHelpDialog } = require('./dialogs/cancelAndHelpDialog');
+const { PurchaseData } = require('./dialogs/purchaseData');
 
 const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
 const GENDER_DIALOG = 'genderDialog';
 const PRICE_DIALOG = 'priceDialog';
-const HELP_DIALOG = 'cancelandHelpDialog';
+const FALLBACK_DIALOG = 'fallbackDialog';
+const HELP_DIALOG = 'cancelAndHelpDialog';
 const FINISH_DIALOG = 'finishDialog';
-const PURCHASEDATA_DIALOG = 'purchaseData'
-
+const PURCHASEDATA_DIALOG = 'purchaseData';
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -81,13 +81,13 @@ const userState = new UserState(memoryStorage);
 const typeDialog = new TypeDialog(TYPE_DIALOG);
 const colorDialog = new ColorDialog(COLOR_DIALOG);
 const priceDialog = new PriceDialog(PRICE_DIALOG);
-const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG)
-const finishDialog = new FinishDialog(FINISH_DIALOG)
-const cancelandHelpDialog = new CancelAndHelpDialog(HELP_DIALOG)
+const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG);
+const fallbackDialog = new FallbackDialog(FALLBACK_DIALOG);
+const finishDialog = new FinishDialog(FINISH_DIALOG);
+const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG);
 const genderDialog = new GenderDialog(GENDER_DIALOG);
-const dialog = new MainDialog( typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog);
-const bot = new DialogAndWelcomeBot(conversationState, userState, dialog,dispatchRecognizer);
-
+const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, cancelAndHelpDialog, fallbackDialog);
+const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());

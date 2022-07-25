@@ -5,7 +5,7 @@ const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialo
 const TEXT_PROMPT = 'TEXT_PROMPT';
 const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 class MainDialog extends ComponentDialog {
-    constructor(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog) {
+    constructor(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog) {
         super('MainDialog');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT));
@@ -16,10 +16,10 @@ class MainDialog extends ComponentDialog {
             .addDialog(priceDialog)
             .addDialog(purchaseData)
             .addDialog(finishDialog)
+            .addDialog(fallbackDialog)
             .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
-                this.actStep.bind(this),
-                this.finalStep.bind(this)
+                this.actStep.bind(this)
             ]));
 
         this.initialDialogId = MAIN_WATERFALL_DIALOG;
@@ -50,36 +50,18 @@ class MainDialog extends ComponentDialog {
         ));
     }
 
-    // dispatchToTopIntentAsync
     async actStep(stepContext) {
         if (!stepContext.context.luisResult) {
             return await stepContext.beginDialog('typeDialog');
         }
 
-        // stepContext.context.luisResult
-
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'FiltroTipo': {
-            return await stepContext.beginDialog('typeDialog');
+        case 'FiltroTipo': return await stepContext.beginDialog('typeDialog');
+        case 'FiltroCor': return await stepContext.beginDialog('colorDialog');
+        case 'FiltroGenero': return await stepContext.beginDialog('genderDialog');
+        case 'FiltroPreco': return await stepContext.beginDialog('priceDialog');
+        // default: return await stepContext.beginDialog('fallbackDialog');
         }
-        case 'FiltroCor': {
-            return await stepContext.beginDialog('colorDialog');
-        }
-        case 'FiltroGenero': {
-            return await stepContext.beginDialog('genderDialog');
-        }
-        case 'FiltroPreco': {
-            return await stepContext.beginDialog('priceDialog');
-        }
-        default: {
-            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
-            await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-        }
-            return await stepContext.next();
-        }
-    }
-
-    async finalStep(stepContext) {
     }
 }
 

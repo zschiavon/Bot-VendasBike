@@ -57,7 +57,6 @@ class PriceDialog extends CancelAndHelpDialog {
         let index = last + 1;
 
         if (!bikeVector) {
-            // const maximo = getEntities(stepContext.context.luisResult, 'maxValue');
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
             bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
             console.log(bikes);
@@ -128,22 +127,13 @@ class PriceDialog extends CancelAndHelpDialog {
     }
 
     async finalStep(stepContext) {
-        let message = 'EM DESENVOLVIMENTO';
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'ProximaBike': {
-            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last })
-        }
-        case 'FinalizarPedido': {
-            return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, nameBike: stepContext.values.finalBike.name });
-        }
-
-        case 'Continuar': {
-            await stepContext.context.sendActivity(message);
-            break;
-        }
-        default: {
-            await stepContext.context.sendActivity(message);
-        }
+        case 'ProximaBike': return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
+        case 'Encerrar': return await stepContext.beginDialog('finishDialog');
+        case 'Continuar':
+        case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
+        case 'FinalizarPedido': return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name });
+        default: return await stepContext.beginDialog('fallbackDialog');
         }
     }
 }
