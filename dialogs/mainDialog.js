@@ -5,13 +5,8 @@ const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialo
 const TEXT_PROMPT = 'TEXT_PROMPT';
 const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 class MainDialog extends ComponentDialog {
-    constructor(luisRecognizer, typeDialog, colorDialog, genderDialog, priceDialog, purchaseData) {
+    constructor(luisRecognizer, typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog) {
         super('MainDialog');
-
-        if (!luisRecognizer) throw new Error('[MainDialog]: Missing parameter \'luisRecognizer\' is required');
-        this.luisRecognizer = luisRecognizer;
-
-        if (!typeDialog) throw new Error('[MainDialog]: Missing parameter \'typeDialog\' is required');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT));
         this.addDialog(new TextPrompt('TextPrompt'))
@@ -20,10 +15,12 @@ class MainDialog extends ComponentDialog {
             .addDialog(genderDialog)
             .addDialog(priceDialog)
             .addDialog(purchaseData)
+            .addDialog(finishDialog)
+            .addDialog(fallbackDialog)
+            .addDialog(cancelAndHelpDialog)
             .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
-                this.actStep.bind(this),
-                this.finalStep.bind(this)
+                this.actStep.bind(this)
             ]));
 
         this.initialDialogId = MAIN_WATERFALL_DIALOG;
@@ -41,7 +38,7 @@ class MainDialog extends ComponentDialog {
     }
 
     async firstStep(stepContext) {
-        if (!this.luisRecognizer) {
+        if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
             return await stepContext.next();
@@ -54,36 +51,18 @@ class MainDialog extends ComponentDialog {
         ));
     }
 
-    // dispatchToTopIntentAsync
     async actStep(stepContext) {
-        if (!this.luisRecognizer) {
+        if (!stepContext.context.luisResult) {
             return await stepContext.beginDialog('typeDialog');
         }
-
-        // stepContext.context.luisResult
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'FiltroTipo': {
-            return await stepContext.beginDialog('typeDialog');
+        case 'FiltroTipo': return await stepContext.beginDialog('typeDialog');
+        case 'FiltroCor': return await stepContext.beginDialog('colorDialog');
+        case 'FiltroGenero': return await stepContext.beginDialog('genderDialog');
+        case 'FiltroPreco': return await stepContext.beginDialog('priceDialog');
+        default: return await stepContext.beginDialog('fallbackDialog');
         }
-        case 'FiltroCor': {
-            return await stepContext.beginDialog('colorDialog');
-        }
-        case 'FiltroGenero': {
-            return await stepContext.beginDialog('genderDialog');
-        }
-        case 'FiltroPreco': {
-            return await stepContext.beginDialog('priceDialog');
-        }
-        default: {
-            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
-            await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-        }
-            return await stepContext.next();
-        }
-    }
-
-    async finalStep(stepContext) {
     }
 }
 
