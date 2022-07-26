@@ -10,10 +10,8 @@ const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 class ColorDialog extends CancelAndHelpDialog {
-    constructor(id, luisRecognizer) {
+    constructor(id) {
         super(id || 'colorDialog');
-
-        this.luisRecognizer = luisRecognizer;
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [

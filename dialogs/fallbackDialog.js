@@ -7,10 +7,9 @@ const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class FallbackDialog extends CancelAndHelpDialog {
-    constructor(id, luisRecognizer) {
+    constructor(id) {
         super(id || 'fallbackDialog');
-
-        this.luisRecognizer = luisRecognizer;
+        
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [

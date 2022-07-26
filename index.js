@@ -27,6 +27,7 @@ const { FinishDialog } = require('./dialogs/finishDialog');
 const { FallbackDialog } = require('./dialogs/fallbackDialog');
 const { CancelAndHelpDialog } = require('./dialogs/cancelAndHelpDialog');
 const { PurchaseData } = require('./dialogs/purchaseData');
+const { GatherAdress } = require('./dialogs/gatherAdress')
 
 const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
@@ -36,6 +37,7 @@ const HELP_DIALOG = 'cancelAndHelpDialog';
 const FINISH_DIALOG = 'finishDialog';
 const PURCHASEDATA_DIALOG = 'purchaseData';
 const FALLBACK_DIALOG = 'fallbackDialog';
+const GATHERADRESS_DIALOG = 'gatherAdress'
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -47,7 +49,7 @@ const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
 const dispatchRecognizer = new LuisRecognizer({
     applicationId: process.env.LuisAppId,
     endpointKey: process.env.LuisAPIKey,
-    endpoint: `https://${ process.env.LuisAPIHostName }.cognitiveservices.azure.com/`
+    endpoint: `https://${process.env.LuisAPIHostName}.cognitiveservices.azure.com/`
 }, {
     includeAllIntents: true
 }, true);
@@ -57,10 +59,10 @@ const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfigura
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 const onTurnErrorHandler = async (context, error) => {
-    console.error(`\n [onTurnError] unhandled error: ${ error }`);
+    console.error(`\n [onTurnError] unhandled error: ${error}`);
     await context.sendTraceActivity(
         'OnTurnError Trace',
-        `${ error }`,
+        `${error}`,
         'https://www.botframework.com/schemas/error',
         'TurnError'
     );
@@ -84,16 +86,23 @@ const typeDialog = new TypeDialog(TYPE_DIALOG);
 const colorDialog = new ColorDialog(COLOR_DIALOG);
 const priceDialog = new PriceDialog(PRICE_DIALOG);
 const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG);
+<<<<<<< HEAD
 const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
 const genderDialog = new GenderDialog(GENDER_DIALOG);
 const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog);
+=======
+const gatherAdress = new GatherAdress(GATHERADRESS_DIALOG)
+const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
+const genderDialog = new GenderDialog(GENDER_DIALOG);
+const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress);
+>>>>>>> develop
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
 
-server.listen(process.env.port || process.env.PORT || 3978, function() {
-    console.log(`\n${ server.name } listening to ${ server.url }`);
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log(`\n${server.name} listening to ${server.url}`);
     console.log('\nObtenha o emulador do Bot Framework: https://aka.ms/botframework-emulator');
     console.log('\nPara falar com seu bot, abra o emulador selecione "Open Bot"');
 });

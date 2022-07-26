@@ -6,7 +6,7 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "start": "node ./index.js",
+        "start": "nodemon ./index.js",
         "watch": "node ./index.js",
         "lint": "eslint .",
         "test": "nyc mocha tests/**/*.test.js"
