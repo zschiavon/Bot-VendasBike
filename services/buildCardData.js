@@ -1,7 +1,7 @@
 const { CardFactory, MessageFactory } = require('botbuilder');
 
 const buildCardData = async (zipeVector, informações, stepContext) => {
-    const info = `1- Nome: ${ zipeVector.cep } 
+    const info = `1- Cep: ${ zipeVector.cep ? zipeVector.cep : "Cep não encontrado" } 
         \n\n 2- Cidade: ${ zipeVector.localidade } 
         \n\n 3- Bairro: ${ zipeVector.bairro }
         \n\n 4- Endereço: ${ zipeVector.logradouro }

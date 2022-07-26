@@ -20,8 +20,7 @@ class GatherAdress extends CancelAndHelpDialog {
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.actStep.bind(this),
                 this.callStep.bind(this),
-                this.confirmStep.bind(this),
-                this.decisionStep.bind(this),
+                this.confirmStep.bind(this),                
                 this.finalStep.bind(this)
             ]));
 
@@ -55,26 +54,16 @@ class GatherAdress extends CancelAndHelpDialog {
 
     }
 
-    async decisionStep(stepContext) {
-        stepContext.values.logradouro = stepContext.result
-
-        const messageText = 'Anotado aqui qual o número de sua residencia?';
-        await stepContext.context.sendActivity(messageText);
-        return await stepContext.prompt(TEXT_PROMPT, '');
-    }
-
+   
     async finalStep(stepContext) {
-
+        const logradouro =  stepContext.values.logradouro = stepContext.result
         const localidade = stepContext.values.city 
-        const bairro = stepContext.values.bairro 
-        const logradouro = stepContext.values.logradouro 
-        const numberHouse = stepContext.values.numberHouse = stepContext.result
+        const bairro = stepContext.values.bairro        
 
         const zipeVector = {
             localidade,
             bairro,
-            logradouro,
-            numberHouse,
+            logradouro,            
         }
 
         return await stepContext.endDialog(zipeVector)
