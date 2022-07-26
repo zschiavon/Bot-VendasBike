@@ -44,6 +44,9 @@ class TypeDialog extends CancelAndHelpDialog {
 
     async callStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog();
+        }
 
         let bikes = bikeVector;
         let index = last + 1;

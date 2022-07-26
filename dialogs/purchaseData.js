@@ -1,14 +1,16 @@
 const { InputHints, MessageFactory } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
-const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog } = require('botbuilder-dialogs');
+const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog, NumberPrompt } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const axios = require('axios');
 const { buildCardData } = require('../services/buildCardData');
 const { searchApi } = require('../services/apiCall');
 const { getEntities } = require('../services/recognizer');
+const { cpfValidator } = require('../services/cpfValidator');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
+const NUMBER_PROMPT = 'numberprompt';
 const CHOICE_PROMPT = 'choicePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
@@ -18,6 +20,7 @@ class PurchaseData extends CancelAndHelpDialog {
 
         this.luisRecognizer = luisRecognizer;
         this.addDialog(new TextPrompt(TEXT_PROMPT))
+            .addDialog(new NumberPrompt(NUMBER_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -48,7 +51,7 @@ class PurchaseData extends CancelAndHelpDialog {
 
         const Message = `Este é seu carrinho de compras. Os valores são validos para ${ data.getDate() }/${ data.getMonth() + 1 }/${ data.getFullYear() } `;
         const valuepurchase = `Valor total: ${ last }`;
-        const confirm = 'Posso confirmar e prossegui com a compra?';
+        const confirm = 'Posso confirmar e prosseguir com a compra?';
         await stepContext.context.sendActivity(Message);
         await stepContext.context.sendActivity(nameBike);
         await stepContext.context.sendActivity(valuepurchase);
@@ -82,7 +85,7 @@ class PurchaseData extends CancelAndHelpDialog {
     }
 
     async confirmStep(stepContext) {
-        const messageZipCode = 'Vamos agora ao endereço de entrega. Por favor digite o cep';
+        const messageZipCode = 'Vamos agora ao endereço de entrega. Por favor digite o CEP';
         await stepContext.context.sendActivity(messageZipCode);
         return await stepContext.prompt(TEXT_PROMPT, '');
     }
@@ -103,7 +106,7 @@ class PurchaseData extends CancelAndHelpDialog {
     async complementStep(stepContext) {
         stepContext.values.numberHouse = stepContext.result;
 
-        const messageCase = 'Se for o caso informe o complemento';
+        const messageCase = 'Se for o caso, informe o complemento';
         await stepContext.context.sendActivity(messageCase);
 
         return await stepContext.prompt(TEXT_PROMPT, '');
@@ -122,12 +125,16 @@ class PurchaseData extends CancelAndHelpDialog {
 
         const messageCase = 'Qual o CPF?';
         await stepContext.context.sendActivity(messageCase);
+
         return await stepContext.prompt(TEXT_PROMPT, '');
+    }
+
+    async cpfValidator(promptContext) {
+
     }
 
     async phoneStep(stepContext) {
         stepContext.values.cpf = stepContext.result;
-
         const messageCase = 'E o seu telefone?';
         await stepContext.context.sendActivity(messageCase);
         return await stepContext.prompt(TEXT_PROMPT, '');
@@ -148,7 +155,7 @@ class PurchaseData extends CancelAndHelpDialog {
             name,
             cpf,
             telefone
-        }
+        };
 
         const messageCase = 'Para finalizarmos a compra confirme seus dados';
         const messageCase1 = 'dados informados';

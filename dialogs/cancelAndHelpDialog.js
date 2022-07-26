@@ -25,7 +25,7 @@ class CancelAndHelpDialog extends ComponentDialog {
                 const cancelMessageText = 'Cancelando....';
                 await innerDc.context.sendActivity(cancelMessageText, cancelMessageText, InputHints.IgnoringInput);
                 return await innerDc.cancelAllDialogs();
-            } case 'none': return await innerDc.beginDialog('fallbackDialog');
+            } // case 'none': return await innerDc.beginDialog('fallbackDialog');
             }
         }
     }
