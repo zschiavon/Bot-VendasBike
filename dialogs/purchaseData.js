@@ -24,6 +24,7 @@ class PurchaseData extends CancelAndHelpDialog {
                 this.callStep.bind(this),
                 this.confirmStep.bind(this),
                 this.decisionStep.bind(this),
+                this.numberHouseStep.bind(this),
                 this.complementStep.bind(this),
                 this.nameStep.bind(this),
                 this.cpfStep.bind(this),
@@ -86,12 +87,10 @@ class PurchaseData extends CancelAndHelpDialog {
     async decisionStep(stepContext) {
 
         try {
-
             const response = await axios.get(`https://viacep.com.br/ws/${stepContext.result}/json/`)
-            const zipeCode = "Anotado aqui! Qual é o número da sua residência?"
-            await stepContext.context.sendActivity(zipeCode);
             stepContext.values.zipeVector = response.data;
-            return await stepContext.prompt(TEXT_PROMPT, '');
+            console.log(stepContext.values.zipeVector);
+            return await stepContext.next();
 
         } catch (error) {
             console.log(`não`);
@@ -100,10 +99,15 @@ class PurchaseData extends CancelAndHelpDialog {
 
 
     }
+    async numberHouseStep(stepContext) {
+        stepContext.values.zipeVectorGather = stepContext.result;        
+        const zipeCode = "Anotado aqui! Qual é o número da sua residência?"
+        await stepContext.context.sendActivity(zipeCode);
+        return await stepContext.prompt(TEXT_PROMPT, '');
+    }
 
     async complementStep(stepContext) {
         stepContext.values.numberHouse = stepContext.result
-        console.log(stepContext.values.numberHouse);
         const messageCase = "Se for o caso informe o complemento"
         await stepContext.context.sendActivity(messageCase);
 
@@ -140,7 +144,14 @@ class PurchaseData extends CancelAndHelpDialog {
     async dataStep(stepContext) {
         stepContext.values.tefefone = stepContext.result
 
-        let zipeVector = stepContext.values.zipeVector
+        let zipeVector = "";
+
+        if (stepContext.values.zipeVectorGather) {
+            zipeVector = stepContext.values.zipeVectorGather           
+        } else {
+            zipeVector = stepContext.values.zipeVector            
+        }
+
         const numberHouse = stepContext.values.numberHouse
         const complemento = stepContext.values.complemento
         const name = stepContext.values.name
@@ -157,10 +168,14 @@ class PurchaseData extends CancelAndHelpDialog {
         const messageCase = "Para finalizarmos a compra confirme seus dados"
         const messageCase1 = "dados informados"
         const messageCase2 = "Todos os dados estão corretos?"
+
         await stepContext.context.sendActivity(messageCase);
         await stepContext.context.sendActivity(messageCase1);
+
         const lastBike = await buildCardData(zipeVector, informacoes, stepContext);
+
         await stepContext.context.sendActivity(messageCase2);
+
         return await stepContext.prompt(TEXT_PROMPT, '');
 
 
