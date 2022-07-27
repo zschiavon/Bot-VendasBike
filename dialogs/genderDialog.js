@@ -51,6 +51,10 @@ class GenderDialog extends CancelAndHelpDialog {
         let bikes = bikeVector;
         let index = last + 1;
 
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
+
         if (!bikeVector) {
             const genero = getEntities(stepContext.context.luisResult, 'Genero');
             bikes = await searchApi('Genero', genero.entidade);
@@ -70,21 +74,17 @@ class GenderDialog extends CancelAndHelpDialog {
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'ProximaBike': return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
-        case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
+            case 'ProximaBike': return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
+            case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
 
-        case 'MaisInfo': {
-            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
-            const wish = 'Gostaria de comprar esta bicicleta agora?';
-            await stepContext.context.sendActivity(info);
-            await stepContext.context.sendActivity(wish);
-            return await stepContext.prompt(TEXT_PROMPT, '');
-        }
-        default: {
-            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${ LuisRecognizer.topIntent(luisResult) })`;
-            await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-        }
-            return await stepContext.next();
+            case 'MaisInfo': {
+                const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+                const wish = 'Gostaria de comprar esta bicicleta agora?';
+                await stepContext.context.sendActivity(info);
+                await stepContext.context.sendActivity(wish);
+                return await stepContext.prompt(TEXT_PROMPT, '');
+            }
+            default: return await stepContext.beginDialog('fallbackDialog');
         }
     }
 
@@ -92,16 +92,17 @@ class GenderDialog extends CancelAndHelpDialog {
         if (LuisRecognizer.topIntent(stepContext.context.luisResult) != 'Utilities_Confirm') {
             const message = 'O que você deseja fazer então?';
             await stepContext.context.sendActivity(message);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                'Ver próxima bike', 'Explorar outro filtro de pesquisa', 'Encerrar']));
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Ver próxima bike', 'Explorar outro filtro de pesquisa', 'Encerrar']
+            ));
         } 
             const bikeName = `${ stepContext.values.finalBike.name } foi adicionada ao carrinho de compras`;
             const message = 'O que você deseja fazer agora?';
             await stepContext.context.sendActivity(bikeName);
             await stepContext.context.sendActivity(message);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                'Finalizar pedido', 'Continuar comprando']));
-        
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Finalizar pedido', 'Continuar comprando']
+            ));        
     }
 
     async finalStep(stepContext) {

@@ -52,6 +52,10 @@ class PriceDialog extends CancelAndHelpDialog {
         let bikes = bikeVector;
         let index = last + 1;
 
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
+
         if (!bikeVector) {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
             bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
@@ -75,32 +79,27 @@ class PriceDialog extends CancelAndHelpDialog {
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
 
-        if (!stepContext.context.luisResult) {
-            return await stepContext.beginDialog('typeDialog');
-        }
-
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'MaisInfo': {
-            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
-            const wish = 'Gostaria de comprar esta bicicleta agora?';
+            case 'MaisInfo': {
+                const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+                const wish = 'Gostaria de comprar esta bicicleta agora?';
 
-            await stepContext.context.sendActivity(info);
-            await stepContext.context.sendActivity(wish);
-            return await stepContext.prompt(TEXT_PROMPT, '');
-        }
-        case 'ProximaBike': {
-            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
-        }
-        case 'OutroFiltro': {
-            return await stepContext.beginDialog('MainDialog');
-        }
-        default: {
-            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${ LuisRecognizer.topIntent(luisResult) })`;
-            await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-        }
-        }
+                await stepContext.context.sendActivity(info);
+                await stepContext.context.sendActivity(wish);
+                return await stepContext.prompt(TEXT_PROMPT, '');
+            }
 
-        return await stepContext.next();
+            case 'ProximaBike': {
+                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
+            }
+
+            case 'OutroFiltro': {
+                return await stepContext.beginDialog('MainDialog');
+            }
+
+            default: return await stepContext.beginDialog('fallbackDialog');
+        
+        }
     }
 
     async decisionStep(stepContext) {

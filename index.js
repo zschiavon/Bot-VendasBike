@@ -27,7 +27,7 @@ const { FinishDialog } = require('./dialogs/finishDialog');
 const { FallbackDialog } = require('./dialogs/fallbackDialog');
 const { CancelAndHelpDialog } = require('./dialogs/cancelAndHelpDialog');
 const { PurchaseData } = require('./dialogs/purchaseData');
-const { GatherAdress } = require('./dialogs/gatherAdress')
+const { GatherAdress } = require('./dialogs/gatherAdress');
 
 const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
@@ -86,16 +86,10 @@ const typeDialog = new TypeDialog(TYPE_DIALOG);
 const colorDialog = new ColorDialog(COLOR_DIALOG);
 const priceDialog = new PriceDialog(PRICE_DIALOG);
 const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG);
-<<<<<<< HEAD
-const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
-const genderDialog = new GenderDialog(GENDER_DIALOG);
-const dialog = new MainDialog(dispatchRecognizer, typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog);
-=======
 const gatherAdress = new GatherAdress(GATHERADRESS_DIALOG)
 const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
 const genderDialog = new GenderDialog(GENDER_DIALOG);
 const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress);
->>>>>>> develop
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = restify.createServer();

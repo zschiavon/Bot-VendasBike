@@ -28,6 +28,9 @@ class ColorDialog extends CancelAndHelpDialog {
 
     async colorStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
+
+        
+
         if (!bikeVector) {
             const messageText = 'Qual a cor que você quer para a sua bicicleta?';
             await stepContext.context.sendActivity(messageText);
@@ -58,6 +61,10 @@ class ColorDialog extends CancelAndHelpDialog {
         let bikes = bikeVector;
         let index = last + 1;
 
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
+
         if (!bikeVector) {
             const color = getEntities(stepContext.context.luisResult, 'Cor');
             bikes = await searchApi('cor', color.entidade);
@@ -80,26 +87,24 @@ class ColorDialog extends CancelAndHelpDialog {
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'ProximaBike': {
-            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
-        }
+            case 'ProximaBike': {
+                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
+            }
 
-        case 'MaisInfo': {
-            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
-            const wish = 'Gostaria de comprar esta bicicleta agora?';
-            await stepContext.context.sendActivity(info);
-            await stepContext.context.sendActivity(wish);
-            return await stepContext.prompt(TEXT_PROMPT, '');
-        }
+            case 'MaisInfo': {
+                const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+                const wish = 'Gostaria de comprar esta bicicleta agora?';
+                await stepContext.context.sendActivity(info);
+                await stepContext.context.sendActivity(wish);
+                return await stepContext.prompt(TEXT_PROMPT, '');
+            }
 
-        case 'OutroFiltro': {
-            return await stepContext.beginDialog('MainDialog');
-        }
+            case 'OutroFiltro': {
+                return await stepContext.beginDialog('MainDialog');
+            }
 
-        default: {
-            const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
-            await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-        }
+            default: return await stepContext.beginDialog('fallbackDialog');
+        
         }
     }
 

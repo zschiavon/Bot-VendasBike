@@ -4,13 +4,10 @@ const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog,
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const axios = require('axios');
 const { buildCardData } = require('../services/buildCardData');
-const { searchApi } = require('../services/apiCall');
-const { getEntities } = require('../services/recognizer');
-const { cpfValidator } = require('../services/cpfValidator');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
-const CHOICE_PROMPT = 'choicePrompt'
+const CHOICE_PROMPT = 'choicePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class PurchaseData extends CancelAndHelpDialog {
@@ -18,7 +15,7 @@ class PurchaseData extends CancelAndHelpDialog {
         super(id || 'purchaseData');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
-            .addDialog(new NumberPrompt(NUMBER_PROMPT))
+            //.addDialog(new TextPrompt(CPF_PROMPT, this.cpfValidator))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -60,11 +57,10 @@ class PurchaseData extends CancelAndHelpDialog {
     }
 
     async callStep(stepContext) {
-
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'Utilities_Confirm': {
-                const god = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.'
-                const paymentMethod = 'Escolha o método de pagamento'
+                const god = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.';
+                const paymentMethod = 'Escolha o método de pagamento';
                 await stepContext.context.sendActivity(god);
                 await stepContext.context.sendActivity(paymentMethod);
 
@@ -72,6 +68,7 @@ class PurchaseData extends CancelAndHelpDialog {
                     ['Boleto', 'Cartão de crédito', 'Pix']
                 ));
             }
+            
             default: {
                 await stepContext.context.sendActivity(message);
             }
@@ -194,20 +191,27 @@ class PurchaseData extends CancelAndHelpDialog {
                 await stepContext.context.sendActivity(finalMessage);
                 return await stepContext.beginDialog('finishDialog');
             }
+
             case 'utili': {
                 console.log('aqui ');
                 //return await stepContext.replaceDialog(this.initialDialogId)
             }
+
             case 'Continuar': {
                 await stepContext.context.sendActivity(message)
                 break
             }
+
             default: {
                 console.log('cusco');
                 // await stepContext.context.sendActivity(message);
             }
         }
     }
+
+ /*     async cpfValidator
+
+    } */
 
 }
 
