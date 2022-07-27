@@ -1,4 +1,4 @@
-const { InputHints, MessageFactory } = require('botbuilder');
+const { MessageFactory } = require('botbuilder');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { LuisRecognizer } = require('botbuilder-ai');
@@ -14,7 +14,6 @@ class TypeDialog extends CancelAndHelpDialog {
     constructor(id) {
         super(id || 'typeDialog');
 
-        
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -35,9 +34,9 @@ class TypeDialog extends CancelAndHelpDialog {
             const messageText = 'Boa escolha! Vem comigo para selecionar a sua magrela. 🚴\nQual opção está procurando?';
 
             await stepContext.context.sendActivity(messageText);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                'Infantil', 'Casual', 'Estrada', 'Mountain Bike', 'Elétrica', 'Explorar outro filtro'
-            ]));
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Infantil', 'Casual', 'Estrada', 'Mountain Bike', 'Elétrica', 'Explorar outro filtro']
+            ));
         }
         return await stepContext.next();
     }
@@ -47,6 +46,10 @@ class TypeDialog extends CancelAndHelpDialog {
 
         let bikes = bikeVector;
         let index = last + 1;
+
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
 
         if (!bikeVector) {
             const type = getEntities(stepContext.context.luisResult, 'Tipo');
@@ -73,6 +76,7 @@ class TypeDialog extends CancelAndHelpDialog {
         case 'ProximaBike': {
             return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
         }
+
         case 'MaisInfo': {
             const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
             const wish = 'Gostaria de comprar esta bicicleta agora?';
@@ -85,16 +89,10 @@ class TypeDialog extends CancelAndHelpDialog {
         case 'OutroFiltro': {
             return await stepContext.beginDialog('MainDialog');
         }
-/*         default: {
-            const msg = 'Ihhh, parece que o pneu furou... Estou com dificuldades para entender! Você poderia repetir com outras palavras?';
-            return await stepContext.context.sendActivity(msg);
-            // return await stepContext.beginDialog('fallbackDialog');
-            // const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${ LuisRecognizer.topIntent(luisResult) })`;
-            // await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-        } */
-        }
 
-        // return await stepContext.next();
+        default: return await stepContext.beginDialog('fallbackDialog');
+        
+        }
     }
 
     async decisionStep(stepContext) {
@@ -120,10 +118,9 @@ class TypeDialog extends CancelAndHelpDialog {
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'ProximaBike': return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
         case 'Encerrar': return await stepContext.beginDialog('finishDialog');
-        case 'Continuar':
         case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
         case 'FinalizarPedido': return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name });
-        // default: return await stepContext.beginDialog('fallbackDialog');
+        default: return await stepContext.beginDialog('fallbackDialog');
         }
     }
 }

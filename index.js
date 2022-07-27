@@ -27,7 +27,7 @@ const { FinishDialog } = require('./dialogs/finishDialog');
 const { FallbackDialog } = require('./dialogs/fallbackDialog');
 const { CancelAndHelpDialog } = require('./dialogs/cancelAndHelpDialog');
 const { PurchaseData } = require('./dialogs/purchaseData');
-const { GatherAdress } = require('./dialogs/gatherAdress')
+const { GatherAdress } = require('./dialogs/gatherAdress');
 
 const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
