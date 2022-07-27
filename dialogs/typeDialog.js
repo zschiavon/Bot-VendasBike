@@ -118,6 +118,7 @@ class TypeDialog extends CancelAndHelpDialog {
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'ProximaBike': return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
         case 'Encerrar': return await stepContext.beginDialog('finishDialog');
+        case 'Continuar':
         case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
         case 'FinalizarPedido': return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name });
         default: return await stepContext.beginDialog('fallbackDialog');
