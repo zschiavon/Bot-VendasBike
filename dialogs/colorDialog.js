@@ -134,7 +134,7 @@ class ColorDialog extends CancelAndHelpDialog {
         case 'Continuar':
         case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
         case 'FinalizarPedido': return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name });
-        default: return await stepContext.beginDialog('FallbackDialog');
+        default: return await stepContext.beginDialog('fallbackDialog');
         }
     }
 }
