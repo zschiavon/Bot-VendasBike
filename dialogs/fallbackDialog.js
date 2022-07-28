@@ -46,11 +46,9 @@ class FallbackDialog extends CancelAndHelpDialog {
     }
 
     async fourthStep(stepContext) {
-        if (LuisRecognizer.topIntent(stepContext.context.luisResult) != 'Menu') {
-            const Message = 'Sinto muito, ainda estou aprendendo e no momento não consigo entender o que você deseja. Mas podemos tentar conversar novamente mais tarde!';
-            await stepContext.context.sendActivity(Message);
-            return await stepContext.cancelAllDialogs();
-        }
+        const Message = 'Sinto muito, ainda estou aprendendo e no momento não consigo entender o que você deseja. Mas podemos tentar conversar novamente mais tarde!';
+        await stepContext.context.sendActivity(Message);
+        return await stepContext.cancelAllDialogs();
     }
 }
 module.exports.FallbackDialog = FallbackDialog;
