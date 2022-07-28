@@ -5,7 +5,7 @@ const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialo
 const TEXT_PROMPT = 'TEXT_PROMPT';
 const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 class MainDialog extends ComponentDialog {
-    constructor( typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog, gatherAdress) {
+    constructor(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog, gatherAdress) {
         super('MainDialog');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT));
@@ -39,6 +39,14 @@ class MainDialog extends ComponentDialog {
     }
 
     async firstStep(stepContext) {
+        if (stepContext.options?.bike) {
+            stepContext.values.array = stepContext.options.bike
+           
+        } else {
+            stepContext.options.bike = []
+           
+        }
+
         if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);
@@ -53,16 +61,23 @@ class MainDialog extends ComponentDialog {
     }
 
     async actStep(stepContext) {
+        const purcheDetails = stepContext.options;
+        console.log(stepContext.options.bike);
         if (!stepContext.context.luisResult) {
             return await stepContext.beginDialog('typeDialog');
         }
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'FiltroTipo': return await stepContext.beginDialog('typeDialog');
-        case 'FiltroCor': return await stepContext.beginDialog('colorDialog');
-        case 'FiltroGenero': return await stepContext.beginDialog('genderDialog');
-        case 'FiltroPreco': return await stepContext.beginDialog('priceDialog');
-        default: return await stepContext.beginDialog('fallbackDialog');
+            case 'FiltroTipo':
+                return await stepContext.beginDialog('typeDialog', purcheDetails);
+            case 'FiltroCor':
+                return await stepContext.beginDialog('colorDialog', purcheDetails);
+            case 'FiltroGenero':
+                return await stepContext.beginDialog('genderDialog', purcheDetails);
+            case 'FiltroPreco':
+                return await stepContext.beginDialog('priceDialog', purcheDetails);
+            default:
+                return await stepContext.beginDialog('fallbackDialog');
         }
     }
 }

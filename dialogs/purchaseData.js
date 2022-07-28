@@ -36,8 +36,10 @@ class PurchaseData extends CancelAndHelpDialog {
     }
 
     async actStep(stepContext) {
-        const data = new Date();
-        const { bikeVector, last, nameBike } = stepContext.options;
+        const purcheDetails = stepContext.options;
+        const { bikeVector, last, nameBike, bike } = stepContext.options;
+        const data = new Date();       
+        let soma = 0;
 
         if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
@@ -45,11 +47,17 @@ class PurchaseData extends CancelAndHelpDialog {
             return await stepContext.next();
         }
 
-        const Message = `Este é seu carrinho de compras. Os valores são validos para ${ data.getDate() }/${ data.getMonth() + 1 }/${ data.getFullYear() } `;
-        const valuepurchase = `Valor total: ${ last }`;
-        const confirm = 'Posso confirmar e prosseguir com a compra?';
+        const Message = `Este é seu carrinho de compras. Os valores são validos para ${data.getDate()}/${data.getMonth() + 1}/${data.getFullYear()} `;
         await stepContext.context.sendActivity(Message);
-        await stepContext.context.sendActivity(nameBike);
+
+        for (let i = 0; i < bike.length; i++) {
+            const mensagem = bike[i].name
+            soma += bike[i].price                        
+            await stepContext.context.sendActivity(mensagem);
+        }
+
+        const valuepurchase = `Valor total: R$${soma.toFixed(2)}`
+        const confirm = 'Posso confirmar e prossegui com a compra?'       
         await stepContext.context.sendActivity(valuepurchase);
         await stepContext.context.sendActivity(confirm);
 
@@ -99,7 +107,7 @@ class PurchaseData extends CancelAndHelpDialog {
 
     }
     async numberHouseStep(stepContext) {
-        stepContext.values.zipeVectorGather = stepContext.result;        
+        stepContext.values.zipeVectorGather = stepContext.result;
         const zipeCode = "Anotado aqui! Qual é o número da sua residência?"
         await stepContext.context.sendActivity(zipeCode);
         return await stepContext.prompt(TEXT_PROMPT, '');
@@ -151,9 +159,9 @@ class PurchaseData extends CancelAndHelpDialog {
         let zipeVector = '';
 
         if (stepContext.values.zipeVectorGather) {
-            zipeVector = stepContext.values.zipeVectorGather;
+            zipeVector = stepContext.values.zipeVectorGather
         } else {
-            zipeVector = stepContext.values.zipeVector;
+            zipeVector = stepContext.values.zipeVector
         }
 
         const numberHouse = stepContext.values.numberHouse;
