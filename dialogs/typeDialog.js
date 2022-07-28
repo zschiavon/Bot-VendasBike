@@ -1,4 +1,4 @@
-const { InputHints, MessageFactory } = require('botbuilder');
+const { MessageFactory } = require('botbuilder');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { LuisRecognizer } = require('botbuilder-ai');
@@ -13,7 +13,6 @@ const WATERFALL_DIALOG = 'waterfallDialog';
 class TypeDialog extends CancelAndHelpDialog {
     constructor(id) {
         super(id || 'typeDialog');
-
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
@@ -35,9 +34,9 @@ class TypeDialog extends CancelAndHelpDialog {
             const messageText = 'Boa escolha! Vem comigo para selecionar a sua magrela. 🚴\nQual opção está procurando?';
 
             await stepContext.context.sendActivity(messageText);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                'Infantil', 'Casual', 'Estrada', 'Mountain Bike', 'Elétrica', 'Explorar outro filtro'
-            ]));
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Infantil', 'Casual', 'Estrada', 'Mountain Bike', 'Elétrica', 'Explorar outro filtro']
+            ));
         }
         return await stepContext.next();
     }
@@ -47,6 +46,10 @@ class TypeDialog extends CancelAndHelpDialog {
 
         let bikes = bikeVector;
         let index = last + 1;
+
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
 
         if (!bikeVector) {
             const type = getEntities(stepContext.context.luisResult, 'Tipo');
@@ -82,19 +85,13 @@ class TypeDialog extends CancelAndHelpDialog {
                 return await stepContext.prompt(TEXT_PROMPT, '');
             }
 
-            case 'OutroFiltro': {
-                return await stepContext.beginDialog('MainDialog');
-            }
-            /*         default: {
-                        const msg = 'Ihhh, parece que o pneu furou... Estou com dificuldades para entender! Você poderia repetir com outras palavras?';
-                        return await stepContext.context.sendActivity(msg);
-                        // return await stepContext.beginDialog('fallbackDialog');
-                        // const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${ LuisRecognizer.topIntent(luisResult) })`;
-                        // await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-                    } */
+        case 'OutroFiltro': {
+            return await stepContext.beginDialog('MainDialog');
         }
 
-        // return await stepContext.next();
+        default: return await stepContext.beginDialog('fallbackDialog');
+        
+        }
     }
 
     async decisionStep(stepContext) {

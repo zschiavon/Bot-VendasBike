@@ -12,8 +12,6 @@ const WATERFALL_DIALOG = 'waterfallDialog';
 class ColorDialog extends CancelAndHelpDialog {
     constructor(id) {
         super(id || 'colorDialog');
-
-
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -30,6 +28,9 @@ class ColorDialog extends CancelAndHelpDialog {
 
     async colorStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
+
+        
+
         if (!bikeVector) {
             const messageText = 'Qual a cor que você quer para a sua bicicleta?';
             await stepContext.context.sendActivity(messageText);
@@ -59,6 +60,10 @@ class ColorDialog extends CancelAndHelpDialog {
 
         let bikes = bikeVector;
         let index = last + 1;
+
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
 
         if (!bikeVector) {
             const color = getEntities(stepContext.context.luisResult, 'Cor');
@@ -100,10 +105,8 @@ class ColorDialog extends CancelAndHelpDialog {
                 return await stepContext.beginDialog('MainDialog');
             }
 
-            default: {
-                const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
-                await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-            }
+            default: return await stepContext.beginDialog('fallbackDialog');
+        
         }
     }
 

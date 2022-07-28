@@ -56,6 +56,10 @@ class GenderDialog extends CancelAndHelpDialog {
         let bikes = bikeVector;
         let index = last + 1;
 
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
+
         if (!bikeVector) {
             const genero = getEntities(stepContext.context.luisResult, 'Genero');
             bikes = await searchApi('Genero', genero.entidade);
@@ -90,11 +94,7 @@ class GenderDialog extends CancelAndHelpDialog {
                 await stepContext.context.sendActivity(wish);
                 return await stepContext.prompt(TEXT_PROMPT, '');
             }
-            default: {
-                const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
-                await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-            }
-                return await stepContext.next();
+            default: return await stepContext.beginDialog('fallbackDialog');
         }
     }
 

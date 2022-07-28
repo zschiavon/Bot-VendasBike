@@ -1,15 +1,13 @@
 const { InputHints, MessageFactory } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
-const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog } = require('botbuilder-dialogs');
+const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog, NumberPrompt } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const axios = require('axios');
 const { buildCardData } = require('../services/buildCardData');
-const { searchApi } = require('../services/apiCall');
-const { getEntities } = require('../services/recognizer');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
-const CHOICE_PROMPT = 'choicePrompt'
+const CHOICE_PROMPT = 'choicePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 
 class PurchaseData extends CancelAndHelpDialog {
@@ -17,6 +15,7 @@ class PurchaseData extends CancelAndHelpDialog {
         super(id || 'purchaseData');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
+            //.addDialog(new TextPrompt(CPF_PROMPT, this.cpfValidator))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -57,7 +56,7 @@ class PurchaseData extends CancelAndHelpDialog {
             await stepContext.context.sendActivity(mensagem);
         }
 
-        const valuepurchase = `Valor total: R$${soma}`
+        const valuepurchase = `Valor total: R$${soma.toFixed(2)}`
         const confirm = 'Posso confirmar e prossegui com a compra?'       
         await stepContext.context.sendActivity(valuepurchase);
         await stepContext.context.sendActivity(confirm);
@@ -66,17 +65,18 @@ class PurchaseData extends CancelAndHelpDialog {
     }
 
     async callStep(stepContext) {
-
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'Utilities_Confirm': {
-                const god = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.'
-                const paymentMethod = 'Escolha o método de pagamento'
+                const god = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.';
+                const paymentMethod = 'Escolha o método de pagamento';
                 await stepContext.context.sendActivity(god);
                 await stepContext.context.sendActivity(paymentMethod);
 
-                return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                    'Boleto', 'Cartão de crédito', 'Pix']));
+                return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                    ['Boleto', 'Cartão de crédito', 'Pix']
+                ));
             }
+            
             default: {
                 await stepContext.context.sendActivity(message);
             }
@@ -85,8 +85,7 @@ class PurchaseData extends CancelAndHelpDialog {
     }
 
     async confirmStep(stepContext) {
-
-        const messageZipCode = 'Vamos agora ao endereço de entrega. Por favor digite o cep'
+        const messageZipCode = 'Vamos agora ao endereço de entrega. Por favor digite o CEP';
         await stepContext.context.sendActivity(messageZipCode);
         return await stepContext.prompt(TEXT_PROMPT, '');
 
@@ -137,22 +136,27 @@ class PurchaseData extends CancelAndHelpDialog {
 
         const messageCase = "Qual o CPF?"
         await stepContext.context.sendActivity(messageCase);
+
         return await stepContext.prompt(TEXT_PROMPT, '');
 
     }
 
-    async phoneStep(stepContext) {
-        stepContext.values.cpf = stepContext.result
+    async cpfValidator(promptContext) {
 
-        const messageCase = "E o seu telefone?"
+    }
+
+    async phoneStep(stepContext) {
+        stepContext.values.cpf = stepContext.result;
+
+        const messageCase = 'E o seu telefone?';
         await stepContext.context.sendActivity(messageCase);
         return await stepContext.prompt(TEXT_PROMPT, '');
     }
 
     async dataStep(stepContext) {
-        stepContext.values.tefefone = stepContext.result
+        stepContext.values.tefefone = stepContext.result;
 
-        let zipeVector = "";
+        let zipeVector = '';
 
         if (stepContext.values.zipeVectorGather) {
             zipeVector = stepContext.values.zipeVectorGather
@@ -160,22 +164,22 @@ class PurchaseData extends CancelAndHelpDialog {
             zipeVector = stepContext.values.zipeVector
         }
 
-        const numberHouse = stepContext.values.numberHouse
-        const complemento = stepContext.values.complemento
-        const name = stepContext.values.name
-        const cpf = stepContext.values.cpf
-        const telefone = stepContext.values.tefefone
+        const numberHouse = stepContext.values.numberHouse;
+        const complemento = stepContext.values.complemento;
+        const name = stepContext.values.name;
+        const cpf = stepContext.values.cpf;
+        const telefone = stepContext.values.tefefone;
         const informacoes = {
             numberHouse,
             complemento,
             name,
             cpf,
             telefone
-        }
+        };
 
-        const messageCase = "Para finalizarmos a compra confirme seus dados"
-        const messageCase1 = "dados informados"
-        const messageCase2 = "Todos os dados estão corretos?"
+        const messageCase = 'Para finalizarmos a compra confirme seus dados';
+        const messageCase1 = 'dados informados';
+        const messageCase2 = 'Todos os dados estão corretos?';
 
         await stepContext.context.sendActivity(messageCase);
         await stepContext.context.sendActivity(messageCase1);
@@ -185,32 +189,37 @@ class PurchaseData extends CancelAndHelpDialog {
         await stepContext.context.sendActivity(messageCase2);
 
         return await stepContext.prompt(TEXT_PROMPT, '');
-
-
     }
 
     async finalStep(stepContext) {
         console.log(LuisRecognizer.topIntent(stepContext.context.luisResult));
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'Utilities_Confirm': {
-                const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 60000)}.`
+                const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${ Math.floor(Math.random() * 60000) }.`;
                 await stepContext.context.sendActivity(finalMessage);
                 return await stepContext.beginDialog('finishDialog');
             }
+
             case 'utili': {
                 console.log('aqui ');
                 //return await stepContext.replaceDialog(this.initialDialogId)
             }
+
             case 'Continuar': {
                 await stepContext.context.sendActivity(message)
                 break
             }
+
             default: {
                 console.log('cusco');
                 // await stepContext.context.sendActivity(message);
             }
         }
     }
+
+ /*     async cpfValidator
+
+    } */
 
 }
 

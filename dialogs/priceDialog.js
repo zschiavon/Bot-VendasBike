@@ -52,6 +52,10 @@ class PriceDialog extends CancelAndHelpDialog {
         let bikes = bikeVector;
         let index = last + 1;
 
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
+            return await stepContext.beginDialog('fallbackDialog');
+        }
+
         if (!bikeVector) {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
             bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
@@ -76,10 +80,6 @@ class PriceDialog extends CancelAndHelpDialog {
         const { bikeVector, last } = stepContext.options;
         stepContext.values.arrays = stepContext.options.bike
 
-        if (!stepContext.context.luisResult) {
-            return await stepContext.beginDialog('typeDialog');
-        }
-
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'MaisInfo': {
                 const info = `Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`;
@@ -101,7 +101,7 @@ class PriceDialog extends CancelAndHelpDialog {
             }
         }
 
-        return await stepContext.next();
+
     }
 
     async decisionStep(stepContext) {
