@@ -1,4 +1,4 @@
-const { MessageFactory } = require('botbuilder');
+
 const { TextPrompt, WaterfallDialog, ChoicePrompt, ChoiceFactory } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 

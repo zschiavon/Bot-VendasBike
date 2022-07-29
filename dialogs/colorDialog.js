@@ -1,4 +1,4 @@
-const { InputHints, MessageFactory } = require('botbuilder');
+const {  MessageFactory } = require('botbuilder');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { LuisRecognizer } = require('botbuilder-ai');

@@ -29,6 +29,7 @@ const { FallbackDialog } = require('./dialogs/fallbackDialog');
 const { CancelAndHelpDialog } = require('./dialogs/cancelAndHelpDialog');
 const { PurchaseData } = require('./dialogs/purchaseData');
 const { GatherAdress } = require('./dialogs/gatherAdress');
+const { ConfirmData } = require('./dialogs/confirmDataDialog');
 
 const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
@@ -39,6 +40,7 @@ const FINISH_DIALOG = 'finishDialog';
 const PURCHASEDATA_DIALOG = 'purchaseData';
 const FALLBACK_DIALOG = 'fallbackDialog';
 const GATHERADRESS_DIALOG = 'gatherAdress'
+const CONFIRMDATA_DIALOG = 'confirmData'
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -88,9 +90,10 @@ const colorDialog = new ColorDialog(COLOR_DIALOG);
 const priceDialog = new PriceDialog(PRICE_DIALOG);
 const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG);
 const gatherAdress = new GatherAdress(GATHERADRESS_DIALOG)
+const confirmData = new ConfirmData(CONFIRMDATA_DIALOG)
 const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
 const genderDialog = new GenderDialog(GENDER_DIALOG);
-const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress);
+const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress, confirmData);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = express();

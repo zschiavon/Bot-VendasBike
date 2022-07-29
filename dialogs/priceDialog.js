@@ -21,6 +21,7 @@ class PriceDialog extends CancelAndHelpDialog {
                 this.actStep.bind(this),
                 this.callStep.bind(this),
                 this.confirmStep.bind(this),
+                this.decisionStep.bind(this),
                 this.finalStep.bind(this)
             ]));
 
