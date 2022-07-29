@@ -5,7 +5,8 @@ const path = require('path');
 const ENV_FILE = path.join(__dirname, '.env');
 require('dotenv').config({ path: ENV_FILE });
 
-const restify = require('restify');
+const express = require('express');
+const bodyParser = require('body-parser')
 
 const {
     CloudAdapter,
@@ -92,8 +93,8 @@ const genderDialog = new GenderDialog(GENDER_DIALOG);
 const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
-const server = restify.createServer();
-server.use(restify.plugins.bodyParser());
+const server = express();
+server.use(bodyParser.json({ extended: true }));
 
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log(`\n${server.name} listening to ${server.url}`);
