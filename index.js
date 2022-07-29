@@ -30,6 +30,7 @@ const { CancelAndHelpDialog } = require('./dialogs/cancelAndHelpDialog');
 const { PurchaseData } = require('./dialogs/purchaseData');
 const { GatherAdress } = require('./dialogs/gatherAdress');
 const { ConfirmData } = require('./dialogs/confirmDataDialog');
+const { RemoveBike } = require('./dialogs/removeBikeDialog')
 
 const TYPE_DIALOG = 'typeDialog';
 const COLOR_DIALOG = 'colorDialog';
@@ -41,6 +42,7 @@ const PURCHASEDATA_DIALOG = 'purchaseData';
 const FALLBACK_DIALOG = 'fallbackDialog';
 const GATHERADRESS_DIALOG = 'gatherAdress'
 const CONFIRMDATA_DIALOG = 'confirmData'
+const REMOVEBIKE_DIALOG = 'removeBike'
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,
@@ -93,7 +95,8 @@ const gatherAdress = new GatherAdress(GATHERADRESS_DIALOG)
 const confirmData = new ConfirmData(CONFIRMDATA_DIALOG)
 const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
 const genderDialog = new GenderDialog(GENDER_DIALOG);
-const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress, confirmData);
+const removeBike = new RemoveBike(REMOVEBIKE_DIALOG)
+const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress,removeBike, confirmData);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = express();
