@@ -64,7 +64,7 @@ class MainDialog extends ComponentDialog {
 
     async actStep(stepContext) {
         const purcheDetails = stepContext.options;
-        console.log(stepContext.options.bike);
+        
         if (!stepContext.context.luisResult) {
             return await stepContext.beginDialog('typeDialog');
         }

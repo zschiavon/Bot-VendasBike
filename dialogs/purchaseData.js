@@ -54,13 +54,13 @@ class PurchaseData extends CancelAndHelpDialog {
         await stepContext.context.sendActivity(Message);
 
         for (let i = 0; i < bike.length; i++) {
-            const mensagem = bike[i].name
+            const mensagem = `${[i+1]} - ${bike[i].name}`
             soma += bike[i].price                        
             await stepContext.context.sendActivity(mensagem);
         }
 
         const valuepurchase = `Valor total: R$${soma.toFixed(2)}`
-        const confirm = 'Posso confirmar e prossegui com a compra?'       
+        const confirm = 'Posso confirmar e prosseguir com a compra?'       
         await stepContext.context.sendActivity(valuepurchase);
         await stepContext.context.sendActivity(confirm);
 
@@ -100,11 +100,11 @@ class PurchaseData extends CancelAndHelpDialog {
         try {
             const response = await axios.get(`https://viacep.com.br/ws/${stepContext.result}/json/`)
             stepContext.values.zipeVector = response.data;
-            console.log(stepContext.values.zipeVector);
+            
             return await stepContext.next();
 
         } catch (error) {
-            console.log(`não`);
+            
             return await stepContext.beginDialog('gatherAdress');
         }
 
@@ -165,15 +165,15 @@ class PurchaseData extends CancelAndHelpDialog {
             zipeVector = stepContext.values.zipeVector
         }
         
-        const numberHouse = stepContext.values.numberHouse;
+        const numeroCasa = stepContext.values.numberHouse;
         const complemento = stepContext.values.complemento;
-        const name = stepContext.values.name;
+        const nome = stepContext.values.name;
         const cpf = stepContext.values.cpf;
         const telefone = stepContext.values.tefefone;
         const informacoes = {
-            numberHouse,
+            numeroCasa,
             complemento,
-            name,
+            nome,
             cpf,
             telefone
         };

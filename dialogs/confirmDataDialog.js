@@ -40,7 +40,7 @@ class ConfirmData extends CancelAndHelpDialog {
 
 
     async secondStep(stepContext) {
-        console.log(LuisRecognizer.topIntent(stepContext.context.luisResult));
+        
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'Utilities_Confirm':
                 const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 60000)}.`;
@@ -57,7 +57,7 @@ class ConfirmData extends CancelAndHelpDialog {
 
     async thirdStep(stepContext) {
         const result = stepContext.result.toLowerCase()
-        const found = result.match(/cpf|telefone|numero|complemento|endereco|cidade|bairro|nome|cep/g)
+        const found = result.match(/cpf|telefone|número|numero|complemento|endereço|cidade|bairro|nome|cep/g)
 
         if (found != null) {
             return await stepContext.next({ found: found })
@@ -127,17 +127,17 @@ class ConfirmData extends CancelAndHelpDialog {
             case 'número':
             case 'numero':
             case '5':                
-                stepContext.values.dados.numberHouse = result
+                stepContext.values.dados.numeroCasa = result
                 break
 
-            case 'complememento':
+            case 'complemento':
             case '6':
                 stepContext.values.dados.complemento = result
                 break
 
             case 'nome':
             case '7':
-                 stepContext.values.dados.nome = result
+                 stepContext.values.dados.nume = result
                 break
 
             case 'cpf':

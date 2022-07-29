@@ -60,7 +60,7 @@ class PriceDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
             bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
-            console.log(bikes);
+            
             index = 0;
         }
 
@@ -115,7 +115,7 @@ class PriceDialog extends CancelAndHelpDialog {
         }
         stepContext.options.bike.push(stepContext.values.finalBike)
         stepContext.values.arrays = stepContext.options.bike
-        console.log(stepContext.values.arrays);
+        
         const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`;
         const message = 'O que você deseja fazer agora?';
 

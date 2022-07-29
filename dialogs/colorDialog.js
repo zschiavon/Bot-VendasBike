@@ -121,7 +121,7 @@ class ColorDialog extends CancelAndHelpDialog {
 
         stepContext.options.bike.push(stepContext.values.finalBike)
         stepContext.values.arrays = stepContext.options.bike
-        console.log(stepContext.values.arrays);
+        
         const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`;
         const message = 'O que você deseja fazer agora?';
 
