@@ -95,10 +95,8 @@ class PriceDialog extends CancelAndHelpDialog {
             case 'OutroFiltro': {
                 return await stepContext.beginDialog('MainDialog');
             }
-            default: {
-                const didntUnderstandMessageText = `Desculpe, eu não entendi isso. Por favor, tente perguntar de uma maneira diferente (a intenção foi ${LuisRecognizer.topIntent(luisResult)})`;
-                await stepContext.context.sendActivity(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-            }
+            default: return await stepContext.beginDialog('fallbackDialog');
+            
         }
 
 

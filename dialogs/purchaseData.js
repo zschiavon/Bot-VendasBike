@@ -15,7 +15,6 @@ class PurchaseData extends CancelAndHelpDialog {
         super(id || 'purchaseData');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
-            //.addDialog(new TextPrompt(CPF_PROMPT, this.cpfValidator))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -141,10 +140,6 @@ class PurchaseData extends CancelAndHelpDialog {
 
     }
 
-    async cpfValidator(promptContext) {
-
-    }
-
     async phoneStep(stepContext) {
         stepContext.values.cpf = stepContext.result;
 
@@ -177,7 +172,7 @@ class PurchaseData extends CancelAndHelpDialog {
             telefone
         };
 
-        const messageCase = 'Para finalizarmos a compra confirme seus dados';
+        const messageCase = 'Para finalizarmos a compra, confirme seus dados';
         const messageCase1 = 'dados informados';
         const messageCase2 = 'Todos os dados estão corretos?';
 
@@ -216,10 +211,6 @@ class PurchaseData extends CancelAndHelpDialog {
             }
         }
     }
-
- /*     async cpfValidator
-
-    } */
 
 }
 

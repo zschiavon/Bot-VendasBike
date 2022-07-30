@@ -19,6 +19,7 @@
         "botbuilder-dialogs": "~4.16.0",
         "botbuilder-testing": "~4.16.0",
         "dotenv": "^8.2.0",
+        "express": "^4.18.1",
         "moment-timezone": "~0.5.33",
         "restify": "~8.6.0"
     },
