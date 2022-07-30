@@ -1,10 +1,5 @@
-const { InputHints, MessageFactory } = require('botbuilder');
-const { LuisRecognizer } = require('botbuilder-ai');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
-const { buildCard } = require('../services/buildCard');
-const { searchApi } = require('../services/apiCall');
-const { getEntities } = require('../services/recognizer');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';

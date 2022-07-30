@@ -56,43 +56,41 @@ class RemoveBike extends CancelAndHelpDialog {
     }    
 
     async choiceStep(stepContext) {        
-            let message = 'Digite o número da opção que deseja retirar do seu carrinho'            
-            return await stepContext.prompt(CHOICE_PROMPT, {
-                prompt: message,
-                retryPrompt: 'Desculpe, não entendi. Para retirar do carrinho eu preciso do número de uma das opções baixo:',
-                choices: stepContext.values.names})
+        let message = 'Digite o número da opção que deseja retirar do seu carrinho'            
+        return await stepContext.prompt(CHOICE_PROMPT, {
+            prompt: message,
+            retryPrompt: 'Desculpe, não entendi. Para retirar do carrinho eu preciso do número de uma das opções baixo:',
+            choices: stepContext.values.names
+        })
         
-}
+    }
 
     async updateStep(stepContext) {
         
         if(stepContext.result.erro){
-        let message = 'Sinto muito, estou com dificuldade de entender. Tente novamente daqui a pouco!'
-        await stepContext.context.sendActivity(message)
-        return await stepContext.cancelAllDialogs()
-    }
+            let message = 'Sinto muito, estou com dificuldade de entender. Tente novamente daqui a pouco!'
+            await stepContext.context.sendActivity(message)
+            return await stepContext.cancelAllDialogs()
+        }
     
-    const namePos = stepContext.values.names.indexOf(stepContext.result.value)        
-    const bikePos = stepContext.values.cart.findIndex(bike => bike.name == stepContext.result.value)
+        const namePos = stepContext.values.names.indexOf(stepContext.result.value)        
+        const bikePos = stepContext.values.cart.findIndex(bike => bike.name == stepContext.result.value)
    
-    stepContext.values.names.splice(namePos,1)
-    stepContext.values.cart.splice(bikePos, 1)
+        stepContext.values.names.splice(namePos,1)
+        stepContext.values.cart.splice(bikePos, 1)
 
-    return await stepContext.replaceDialog('purchaseData', {bike: stepContext.values.cart})
-    
-    
-}
+        return await stepContext.replaceDialog('purchaseData', {bike: stepContext.values.cart})    
+    }
+
     async attemptValidator(promptContext) {
         if(promptContext.attemptCount > 2) {
-         promptContext.recognized.succeeded = true
-         promptContext.recognized.value = {erro: true} 
-        
+            promptContext.recognized.succeeded = true
+            promptContext.recognized.value = {erro: true}         
         }
+
         promptContext.recognized.succeeded = true
         return promptContext.recognized.value
- }
-
-
+    }
 }
 
-    module.exports.RemoveBike = RemoveBike
+module.exports.RemoveBike = RemoveBike

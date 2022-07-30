@@ -5,7 +5,7 @@ const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialo
 const TEXT_PROMPT = 'TEXT_PROMPT';
 const MAIN_WATERFALL_DIALOG = 'mainWaterfallDialog';
 class MainDialog extends ComponentDialog {
-    constructor(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog, gatherAdress, removeBike) {
+    constructor(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, finishDialog, fallbackDialog, cancelAndHelpDialog, gatherAdress,removeBike, confirmData) {
         super('MainDialog');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT));
@@ -19,6 +19,7 @@ class MainDialog extends ComponentDialog {
             .addDialog(fallbackDialog)
             .addDialog(cancelAndHelpDialog)
             .addDialog(gatherAdress)
+            .addDialog(confirmData)
             .addDialog(removeBike)
             .addDialog(new WaterfallDialog(MAIN_WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
@@ -63,7 +64,7 @@ class MainDialog extends ComponentDialog {
 
     async actStep(stepContext) {
         const purcheDetails = stepContext.options;
-        console.log(stepContext.options.bike);
+        
         if (!stepContext.context.luisResult) {
             return await stepContext.beginDialog('typeDialog');
         }
