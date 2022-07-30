@@ -4,17 +4,20 @@ const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog,
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const axios = require('axios');
 const { buildCardData } = require('../services/buildCardData');
+const { cpfValidatorFN } = require('../services/cpfValidator');
 
 const CONFIRM_PROMPT = 'confirmPrompt';
 const TEXT_PROMPT = 'textPrompt';
 const CHOICE_PROMPT = 'choicePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
+const CPF_PROMPT = 'cpfPrompt';
 
 class PurchaseData extends CancelAndHelpDialog {
     constructor(id) {
         super(id || 'purchaseData');
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
+            .addDialog(new TextPrompt(CPF_PROMPT, this.cpfValidator))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -138,11 +141,27 @@ class PurchaseData extends CancelAndHelpDialog {
 
         stepContext.values.name = stepContext.result
 
-        const messageCase = "Qual o CPF?"
-        await stepContext.context.sendActivity(messageCase);
+        let message = 'Qual o seu CPF?';           
+        return await stepContext.prompt(CPF_PROMPT, {
+            prompt: message,
+            retryPrompt: 'Por favor, digite um número de CPF válido.'
+        })
 
-        return await stepContext.prompt(TEXT_PROMPT, '');
+    }
+    
+    async cpfValidator(promptContext) {
+        const { context } = promptContext;
+        promptContext.recognized.value = promptContext.recognized.value.replace(/[a-zA-Z]+/g, '').trim();
+        promptContext.recognized.value = promptContext.recognized.value.replace(/\W+/g, '').trim()
 
+        const cpf = await cpfValidatorFN(promptContext.recognized.value, false);
+        const confirm = [true];
+
+        if (confirm.includes(cpf)) {
+            promptContext.recognized.succeeded = true;     
+            return true;
+        }
+        return  false;            
     }
 
     async phoneStep(stepContext) {
