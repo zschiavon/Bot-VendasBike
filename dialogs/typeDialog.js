@@ -85,11 +85,11 @@ class TypeDialog extends CancelAndHelpDialog {
                 return await stepContext.prompt(TEXT_PROMPT, '');
             }
 
-        case 'OutroFiltro': {
-            return await stepContext.beginDialog('MainDialog');
-        }
+            case 'OutroFiltro': {
+                return await stepContext.beginDialog('MainDialog');
+            }
 
-        default: return await stepContext.beginDialog('fallbackDialog');
+            default: return await stepContext.beginDialog('fallbackDialog');
         
         }
     }
@@ -128,7 +128,7 @@ class TypeDialog extends CancelAndHelpDialog {
                 return await stepContext.beginDialog('MainDialog', { bike: stepContext.values.arrays });
             case 'FinalizarPedido':
                 return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name, bike: stepContext.values.arrays });
-            // default: return await stepContext.beginDialog('fallbackDialog');
+            default: return await stepContext.beginDialog('fallbackDialog');
         }
     }
 }
