@@ -23,7 +23,7 @@ Amira Régio: **https://www.linkedin.com/in/amiiahmad/** </br>
    **LuisAPIHostName=</br>**
 - Entre na pasta do projeto abra o terminal e rode o comando **npm i** para instalar as dependências e a pasta node_modules;
 - Na pasta do projeto abra o terminal e rode o comando **npm start**;
-- Abra o Bot Framework Emulator e e coloca a seguinte rota: **http://localhost:3978/api/messages;**
+- Abra o **Bot Framework Emulator** e coloque a seguinte rota: **http://localhost:3978/api/messages;**
 - Mande uma mensagem inicial e teste o bot;
 ---
 
