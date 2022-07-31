@@ -11,6 +11,7 @@ const TEXT_PROMPT = 'textPrompt';
 const CHOICE_PROMPT = 'choicePrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
 const CPF_PROMPT = 'cpfPrompt';
+const PHONE_PROMPT = 'phonePromp';
 
 class PurchaseData extends CancelAndHelpDialog {
     constructor(id) {
@@ -18,6 +19,7 @@ class PurchaseData extends CancelAndHelpDialog {
 
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new TextPrompt(CPF_PROMPT, this.cpfValidator))
+            .addDialog(new TextPrompt(PHONE_PROMPT, this.phoneValidator))
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
@@ -150,9 +152,11 @@ class PurchaseData extends CancelAndHelpDialog {
     async phoneStep(stepContext) {
         stepContext.values.cpf = stepContext.result;
 
-        const messageCase = 'E o seu telefone?';
-        await stepContext.context.sendActivity(messageCase);
-        return await stepContext.prompt(TEXT_PROMPT, '');
+        let message = 'E o seu telefone?';           
+        return await stepContext.prompt(PHONE_PROMPT, {
+            prompt: message,
+            retryPrompt: 'Por favor, digite um número de telefone válido.'
+        })
     }
     
     async dataStep(stepContext) {
@@ -187,7 +191,7 @@ class PurchaseData extends CancelAndHelpDialog {
     async cpfValidator(promptContext) {
         const { context } = promptContext;
         promptContext.recognized.value = promptContext.recognized.value.replace(/[a-zA-Z]+/g, '').trim();
-        promptContext.recognized.value = promptContext.recognized.value.replace(/\W+/g, '').trim()
+        promptContext.recognized.value = promptContext.recognized.value.replace(/\W+/g, '').trim();
 
         const cpf = await cpfValidatorFN(promptContext.recognized.value, false);
         const confirm = [true];
@@ -197,6 +201,35 @@ class PurchaseData extends CancelAndHelpDialog {
             return true;
         }
         return  false;            
+    }
+
+    async phoneValidator(promptContext) {
+        const { context } = promptContext;       
+
+        const phoneNum = await validPhone(promptContext.recognized.value, false);
+        const confirm = [true];
+
+        if (confirm.includes(phoneNum)) {
+            promptContext.recognized.succeeded = true;     
+            return true;
+        }
+        return  false;          
+        
+
+        function validPhone(context) {
+            console.log(context);
+
+            const regex = /^1\d\d(\d\d)?$|^0800 ?\d{3} ?\d{4}$|^(\(0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d\) ?|0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d[ .-]?)?(9|9[ .-])?[2-9]\d{3}[ .-]?\d{4}$/;
+
+            return regex.test(context)
+            // if (regex.test(context)) {
+            //     promptContext.recognized.succeeded = true; 
+            //     return true
+            // } else {
+            //     return false
+            // } 
+        }
+        //return false;    
     }
 
 }

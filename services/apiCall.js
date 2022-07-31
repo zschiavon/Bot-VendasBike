@@ -28,7 +28,7 @@ async function searchApi(filtro, value, stepContext) {
         }
         return await filtrado;
     } catch (error) {
-        console.error(`Deu erro na sua chamada da API, conserte o problema. erro: ${ error }`);
+        return error;
     }
 }
 
