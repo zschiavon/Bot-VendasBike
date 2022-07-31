@@ -4,10 +4,10 @@ Consiste em um bot de vendas de bicicletas onde o cliente podera navegar pelo bo
 Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consulta e validação dos ceps e Microsoft azure para criar o projeto e intenções do luis.ia.</br>
 ---
 ## Autores
-Ramon Rocha: https://www.linkedin.com/in/ramonrocha1989/ </br>
-Isadora Brito: https://www.linkedin.com/in/isadoradpbrito/ </br>
-Juan Schiavon: https://www.linkedin.com/in/juan-schiavon-10b914236/ </br>
-Amira Régio: https://www.linkedin.com/in/amiiahmad/ </br>
+Ramon Rocha: **https://www.linkedin.com/in/ramonrocha1989/** </br>
+Isadora Brito:**https://www.linkedin.com/in/isadoradpbrito/** </br>
+Juan Schiavon: **https://www.linkedin.com/in/juan-schiavon-10b914236** </br>
+Amira Régio: **https://www.linkedin.com/in/amiiahmad/** </br>
 
 ---
 
