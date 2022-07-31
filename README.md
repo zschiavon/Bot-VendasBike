@@ -13,8 +13,10 @@ Amira Régio: https://www.linkedin.com/in/amiiahmad/ </br>
 
 ## Como rodar o projeto
 - Clone o projeto
-- Entre na pasta do projeto e rode o comando **npm i** para instalar as dependências e a pasta node_modules
-- baixe este arquivo 
-
+- Baixe o Bot Framework Emulator:**https://github.com/Microsoft/BotFramework-Emulator/releases/tag/v4.14.1** ;
+- Entre na pasta do projeto e rode o comando **npm i** para instalar as dependências e a pasta node_modules;
+- Na pasta do projeto abra o terminal e rode o comando **npm start**;
+- Abra o Bot Framework Emulator e e coloca a seguinte rota: **http://localhost:3978/api/messages;**
+- Mande uma mensagem inicial e teste o bot;
 ---
 
