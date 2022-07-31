@@ -1,35 +1,20 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
-
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
-
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+# Bot_vendas
+Este Bot é um projeto desenvolvido para o programa de bolsas da **compass.uol**.</br>
+Consiste em um bot de vendas de bicicletas onde o cliente podera navegar pelo bot tendo acesso a varias bicicletas e poderá adiciona-lás ao seu carrinho de compras e finalizar sua compra colocando dados de pagamento e seus dados para entrega.</br>
+Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consulta e validação dos ceps e Microsoft azure para criar o projeto e intenções do luis.ia.</br>
+---
+## Autores
+Ramon Rocha: https://www.linkedin.com/in/ramonrocha1989/ </br>
+Isadora Brito: https://www.linkedin.com/in/isadoradpbrito/ </br>
+Juan Schiavon: https://www.linkedin.com/in/juan-schiavon-10b914236/ </br>
+Amira Régio: https://www.linkedin.com/in/amiiahmad/ </br>
 
 ---
 
-## Edit a file
-
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
-
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
-
----
-
-## Create a file
-
-Next, you’ll add a new file to this repository.
-
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
-
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+## Como rodar o projeto
+- Clone o projeto
+- Entre na pasta do projeto e rode o comando **npm i** para instalar as dependências e a pasta node_modules
+- baixe este arquivo 
 
 ---
 
