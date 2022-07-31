@@ -3,12 +3,10 @@ Este Bot é um projeto desenvolvido para o programa de bolsas da **compass.uol**
 Consiste em um bot de vendas de bicicletas onde o cliente navegara pelo bot tendo acesso a varias bicicletas e poderá adiciona-lás ao seu carrinho de compras e finalizar sua compra colocando dados de pagamento e seus dados para entrega.</br>
 Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consulta e validação dos ceps e Microsoft azure para criar o projeto e intenções do luis.ia.</br>
 ---
-## Autores
-Ramon Rocha: **https://www.linkedin.com/in/ramonrocha1989/** </br>
-Isadora Brito:**https://www.linkedin.com/in/isadoradpbrito/** </br>
-Juan Schiavon: **https://www.linkedin.com/in/juan-schiavon-10b914236** </br>
-Amira Régio: **https://www.linkedin.com/in/amiiahmad/** </br>
+## Developers
 
+| [<img src="https://avatars.githubusercontent.com/u/82416273?v=4" width=115><br><sub>Amira Ahmad</sub>]( https://www.linkedin.com/in/amiiahmad/) | [<img src="https://avatars.githubusercontent.com/u/61919257?v=4" width=115><br><sub>Isadora Brito</sub>](https://www.linkedin.com/in/isadoradpbrito/) | [<img src="https://avatars.githubusercontent.com/u/88756189?v=4" width=115><br><sub>Juan Schiavon</sub>](https://www.linkedin.com/in/juan-schiavon-10b914236) | [<img src="https://media-exp1.licdn.com/dms/image/C4E03AQEsSLS-7nvN7A/profile-displayphoto-shrink_200_200/0/1643222759304?e=1665014400&v=beta&t=hffVK1omsv5L9x3E-wulCUgkqJbEFcUVF6K_mWI62FE" width=115><br><sub>Ramon Rocha</sub>](https://www.linkedin.com/in/ramonrocha1989/) |
+| :---: | :---: | :---: | :---: |
 ---
 
 ## Como rodar o projeto
