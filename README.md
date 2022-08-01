@@ -12,7 +12,7 @@ Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consu
 ## Como rodar o projeto
 - Clone o projeto
 - Baixe o Bot Framework Emulator:**https://github.com/Microsoft/BotFramework-Emulator/releases/tag/v4.14.1** ;
-- Crie um projeto no site **https://portal.azure.com/#home** e tambÃ©m no **https://www.luis.ai/applications**;
+- Crie um projeto no site **https://portal.azure.com/#home** e também no **https://www.luis.ai/applications**;
 - Baixe o arquivo bot_vendas.lu em **https://bitbucket.org/030189rr/bot_vendas/downloads/** e import para o **https://www.luis.ai/applications**;
 - No site do **https://www.luis.ai/applications** treine e publique o arquivo;
 - No site do luis.ia pegue as variáveis de ambiente fornecida e cole nas variáveis abaixo e crie um arquivo .env no projeto colando as variáveis;</br>
