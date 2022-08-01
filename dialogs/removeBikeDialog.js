@@ -50,7 +50,7 @@ class RemoveBike extends CancelAndHelpDialog {
                 
                 return await stepContext.replaceDialog('MainDialog', {bike: stepContext.values.cart})                 
             case 'Encerrar':                
-                return await stepContext.beginDialog('finishdialog')            
+                return await stepContext.replaceDialog('finishdialog')            
                    
             } 
     }    

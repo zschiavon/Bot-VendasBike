@@ -62,7 +62,7 @@ class ColorDialog extends CancelAndHelpDialog {
         let index = last + 1;
 
         if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
-            return await stepContext.beginDialog('fallbackDialog');
+            return await stepContext.replaceDialog('fallbackDialog');
         }
 
         if (!bikeVector) {
@@ -102,10 +102,10 @@ class ColorDialog extends CancelAndHelpDialog {
             }
 
             case 'OutroFiltro': {
-                return await stepContext.beginDialog('MainDialog');
+                return await stepContext.replaceDialog('MainDialog');
             }
 
-            default: return await stepContext.beginDialog('fallbackDialog');
+            default: return await stepContext.replaceDialog('fallbackDialog');
         
         }
     }
@@ -137,14 +137,14 @@ class ColorDialog extends CancelAndHelpDialog {
             case 'ProximaBike':
                 return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
             case 'Encerrar':
-                return await stepContext.beginDialog('finishDialog');
+                return await stepContext.replaceDialog('finishDialog');
             case 'ContinuarCompra':
             case 'OutroFiltro':
-                return await stepContext.beginDialog('MainDialog', { bike: stepContext.values.arrays });
+                return await stepContext.replaceDialog('MainDialog', { bike: stepContext.values.arrays });
             case 'FinalizarPedido':
-                return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name, bike: stepContext.values.arrays });
+                return await stepContext.replaceDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name, bike: stepContext.values.arrays });
             default:
-                return await stepContext.beginDialog('FallbackDialog');
+                return await stepContext.replaceDialog('FallbackDialog');
         }
     }
 }
