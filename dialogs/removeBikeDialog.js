@@ -42,12 +42,12 @@ class RemoveBike extends CancelAndHelpDialog {
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Retirar um item do carrinho', 'Adicionar mais bicicletas ao carrinho', 'Desistir da compra']))       
     }
 
-    async decisionStep(stepContext) {        
+    async decisionStep(stepContext) {    
+        
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'RetirarItem':               
                 return await stepContext.next()
-            case 'Continuar':
-                
+            case 'Continuar':                
                 return await stepContext.replaceDialog('MainDialog', {bike: stepContext.values.cart})                 
             case 'Encerrar':                
                 return await stepContext.replaceDialog('finishdialog')            

@@ -9,7 +9,7 @@ const WATERFALL_DIALOG = 'waterfallDialog';
 class FinishDialog extends CancelAndHelpDialog {
     constructor(id) {
         super(id || 'finishDialog');
-                
+
         this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new ChoicePrompt(CHOICE_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
