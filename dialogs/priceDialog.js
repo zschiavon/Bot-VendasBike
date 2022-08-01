@@ -53,8 +53,13 @@ class PriceDialog extends CancelAndHelpDialog {
         let bikes = bikeVector;
         let index = last + 1;
 
+        if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'OutroFiltro') {
+            return await stepContext.beginDialog('MainDialog',{ bike: stepContext.values.arrays });
+
+        }
+
         if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
-            return await stepContext.beginDialog('fallbackDialog');
+            return await stepContext.beginDialog('fallbackDialog',{ bike: stepContext.values.arrays });
         }
 
         if (!bikeVector) {
@@ -94,9 +99,9 @@ class PriceDialog extends CancelAndHelpDialog {
                 return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
             }
             case 'OutroFiltro': {
-                return await stepContext.beginDialog('MainDialog');
+                return await stepContext.beginDialog('MainDialog',{ bike: stepContext.values.arrays });
             }
-            default: return await stepContext.beginDialog('fallbackDialog');
+            default: return await stepContext.beginDialog('fallbackDialog',{ bike: stepContext.values.arrays });
             
         }
 
@@ -130,12 +135,12 @@ class PriceDialog extends CancelAndHelpDialog {
                 return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
             case 'Encerrar':
                 return await stepContext.beginDialog('finishDialog');
-            case 'ContinuarCompra':
+            case 'Continuar':
             case 'OutroFiltro':
                 return await stepContext.beginDialog('MainDialog', { bike: stepContext.values.arrays });
             case 'FinalizarPedido':
                 return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name, bike: stepContext.values.arrays });
-            default: return await stepContext.beginDialog('fallbackDialog');
+            default: return await stepContext.beginDialog('fallbackDialog',{ bike: stepContext.values.arrays });
         }
     }
 }

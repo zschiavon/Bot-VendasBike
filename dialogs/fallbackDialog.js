@@ -24,6 +24,8 @@ class FallbackDialog extends CancelAndHelpDialog {
     }
 
     async firstStep(stepContext) {
+        const purcheDetails = stepContext.options
+        const { bike } = stepContext.options;       
         const Message = 'Ihhh, parece que o pneu furou... Estou com dificuldades para entender! Você poderia repetir com outras palavras?';
         await stepContext.context.sendActivity(Message);
         return await stepContext.prompt(TEXT_PROMPT, '');
@@ -31,10 +33,10 @@ class FallbackDialog extends CancelAndHelpDialog {
 
     async secondStep(stepContext) {
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-        case 'FiltroCor': return await stepContext.replaceDialog('colorDialog', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
-        case 'FiltroTipo': return await stepContext.replaceDialog('typeDialog', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
-        case 'FiltroPreco': return await stepContext.replaceDialog('priceDialog', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
-        case 'FiltroGenero': return await stepContext.replaceDialog('genderDialog', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last });
+        case 'FiltroCor': return await stepContext.replaceDialog('colorDialog', {  bike: stepContext.options.bike  });
+        case 'FiltroTipo': return await stepContext.replaceDialog('typeDialog', {  bike: stepContext.options.bike  });
+        case 'FiltroPreco': return await stepContext.replaceDialog('priceDialog', {  bike: stepContext.options.bike  });
+        case 'FiltroGenero': return await stepContext.replaceDialog('genderDialog', {  bike: stepContext.options.bike } );
         default: return await stepContext.next();
         }
     }
