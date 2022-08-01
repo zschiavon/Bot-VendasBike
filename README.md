@@ -2,12 +2,11 @@
 Este Bot é um projeto desenvolvido para o programa de bolsas da **compass.uol**.</br>
 Consiste em um bot de vendas de bicicletas onde o cliente navegara pelo bot tendo acesso a varias bicicletas e poderá adiciona-lás ao seu carrinho de compras e finalizar sua compra colocando dados de pagamento e seus dados para entrega.</br>
 Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consulta e validação dos ceps e Microsoft azure para criar o projeto e intenções do luis.ia.</br>
----
+
 ## Developers
 
-| [<img src="https://avatars.githubusercontent.com/u/82416273?v=4" width=115><br><sub>Amira Ahmad</sub>]( https://www.linkedin.com/in/amiiahmad/) | [<img src="https://avatars.githubusercontent.com/u/61919257?v=4" width=115><br><sub>Isadora Brito</sub>](https://www.linkedin.com/in/isadoradpbrito/) | [<img src="https://avatars.githubusercontent.com/u/88756189?v=4" width=115><br><sub>Juan Schiavon</sub>](https://www.linkedin.com/in/juan-schiavon-10b914236) | [<img src="https://media-exp1.licdn.com/dms/image/C4E03AQEsSLS-7nvN7A/profile-displayphoto-shrink_200_200/0/1643222759304?e=1665014400&v=beta&t=hffVK1omsv5L9x3E-wulCUgkqJbEFcUVF6K_mWI62FE" width=115><br><sub>Ramon Rocha</sub>](https://www.linkedin.com/in/ramonrocha1989/) |
+| [<img src="https://media-exp1.licdn.com/dms/image/C4E03AQHs8xX81-20Ug/profile-displayphoto-shrink_200_200/0/1650072888118?e=1665014400&v=beta&t=K4L5Z1RvaUKTtIM-27nJ2F2-dc9H880-SXncSsLA5XY" width=115><br><sub>Amira Ahmad</sub>]( https://www.linkedin.com/in/amiiahmad/) | [<img src="https://media-exp1.licdn.com/dms/image/C4E03AQHe2PorlRx_tw/profile-displayphoto-shrink_200_200/0/1653049427108?e=1665014400&v=beta&t=-CJ5AtfmtM9WP4Q52J0YDJSFaW4ISCB425vK0CsRgyE" width=115><br><sub>Juan Schiavon</sub>](https://www.linkedin.com/in/juan-schiavon-10b914236) | [<img src="https://media-exp1.licdn.com/dms/image/C4E03AQEsSLS-7nvN7A/profile-displayphoto-shrink_200_200/0/1643222759304?e=1665014400&v=beta&t=hffVK1omsv5L9x3E-wulCUgkqJbEFcUVF6K_mWI62FE" width=115><br><sub>Ramon Rocha</sub>](https://www.linkedin.com/in/ramonrocha1989/) |
 | :---: | :---: | :---: | :---: |
----
 
 ## Como rodar o projeto
 - Clone o projeto
