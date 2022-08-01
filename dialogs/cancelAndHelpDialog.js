@@ -20,12 +20,6 @@ class CancelAndHelpDialog extends ComponentDialog {
             case 'ajuda':
             case 'OutroFiltro':
             case 'Menu': return await innerDc.beginDialog('MainDialog');
-            case 'sair':
-            case 'cancelar': {
-                const cancelMessageText = 'Cancelando....';
-                await innerDc.context.sendActivity(cancelMessageText, cancelMessageText, InputHints.IgnoringInput);
-                return await innerDc.cancelAllDialogs();
-            }
             }
         }
     }
