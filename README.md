@@ -1,7 +1,7 @@
 # Bot_vendas
 Este Bot é um projeto desenvolvido para o programa de bolsas da **compass.uol**.</br>
-Consiste em um bot de vendas de bicicletas onde o cliente navegara pelo bot tendo acesso a varias bicicletas e poderÃ¡ adiciona-lÃ¡s ao seu carrinho de compras e finalizar sua compra colocando dados de pagamento e seus dados para entrega.</br>
-Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consulta e validaÃ§Ã£o dos ceps e Microsoft azure para criar o projeto e intenÃ§Ãµes do luis.ia.</br>
+Consiste em um bot de vendas de bicicletas onde o cliente navegara pelo bot tendo acesso a varias bicicletas e poderá adiciona-las ao seu carrinho de compras e finalizar sua compra colocando dados de pagamento e seus dados para entrega.</br>
+Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consulta e validação dos ceps e Microsoft azure para criar o projeto e intenções do luis.ia.</br>
 ---
 ## Developers
 
@@ -16,11 +16,11 @@ Foram usados neste projeto uma api contendo as bicicletas, api Viacep para consu
 - Crie um projeto no site **https://portal.azure.com/#home** e tambÃ©m no **https://www.luis.ai/applications**;
 - Baixe o arquivo bot_vendas.lu em **https://bitbucket.org/030189rr/bot_vendas/downloads/** e import para o **https://www.luis.ai/applications**;
 - No site do **https://www.luis.ai/applications** treine e publique o arquivo;
-- No site do luis.ia pegue as variÃ¡veis de ambiente fornecida e cole nas variÃ¡veis abaixo e crie um arquivo .env no projeto colando as variÃ¡veis;</br>
+- No site do luis.ia pegue as variáveis de ambiente fornecida e cole nas variáveis abaixo e crie um arquivo .env no projeto colando as variáveis;</br>
    **LuisAppId=</br>**
    **LuisAPIKey=</br>**
    **LuisAPIHostName=</br>**
-- Entre na pasta do projeto abra o terminal e rode o comando **npm i** para instalar as dependÃªncias e a pasta node_modules;
+- Entre na pasta do projeto abra o terminal e rode o comando **npm i** para instalar as dependências e a pasta node_modules;
 - Na pasta do projeto abra o terminal e rode o comando **npm start**;
 - Abra o **Bot Framework Emulator** e coloque a seguinte rota: **http://localhost:3978/api/messages;**
 - Mande uma mensagem inicial e teste o bot;
