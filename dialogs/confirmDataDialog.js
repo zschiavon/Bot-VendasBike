@@ -45,7 +45,7 @@ class ConfirmData extends CancelAndHelpDialog {
             case 'Utilities_Confirm':
                 const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 60000)}.`;
                 await stepContext.context.sendActivity(finalMessage);
-                return await stepContext.beginDialog('finishDialog');
+                return await stepContext.replaceDialog('finishDialog');
 
             case 'Encerrar':
                 const message = 'Qual informação que deseja alterar?'

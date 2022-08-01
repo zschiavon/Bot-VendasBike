@@ -17,10 +17,19 @@ class CancelAndHelpDialog extends ComponentDialog {
     async interrupt(innerDc) {
        
         if (innerDc.context.activity.text) {
+          
             switch (LuisRecognizer.topIntent(innerDc.context.luisResult).toLowerCase()) {
             case 'ajuda':
+<<<<<<< HEAD
            // case 'outrofiltro':
             case 'menu': return await innerDc.beginDialog('MainDialog');
+=======
+            case 'outrofiltro':
+            case 'menu':{
+                    return await innerDc.beginDialog('MainDialog');
+            } 
+                
+>>>>>>> develop
             case 'sair':
             case 'cancelar': {
                 const cancelMessageText = 'Cancelando....';
