@@ -23,12 +23,10 @@ async function searchApi(filtro, value, stepContext) {
         case 'cor':
             filtrado = await response.data.filter(bike => { return bike.color == value; });
             break;
-        default:
-            break;
         }
         return await filtrado;
-    } catch (error) {
-        return error;
+    } catch (e) {
+        return filtrado;
     }
 }
 

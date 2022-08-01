@@ -68,6 +68,9 @@ class ColorDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const color = getEntities(stepContext.context.luisResult, 'Cor');
             bikes = await searchApi('cor', color.entidade);
+
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'colorDialog' });
+
             index = 0;
         }
 
@@ -100,11 +103,8 @@ class ColorDialog extends CancelAndHelpDialog {
                 await stepContext.context.sendActivity(wish);
                 return await stepContext.prompt(TEXT_PROMPT, '');
             }
-
-            case 'OutroFiltro': {
-                return await stepContext.beginDialog('MainDialog');
-            }
-
+            case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
+            case 'Encerrar': return await stepContext.cancelAllDialogs();
             default: return await stepContext.beginDialog('fallbackDialog');
         
         }
@@ -144,7 +144,7 @@ class ColorDialog extends CancelAndHelpDialog {
             case 'FinalizarPedido':
                 return await stepContext.beginDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name, bike: stepContext.values.arrays });
             default:
-                return await stepContext.beginDialog('FallbackDialog');
+                return await stepContext.beginDialog('fallbackDialog');
         }
     }
 }

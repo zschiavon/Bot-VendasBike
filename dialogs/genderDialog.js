@@ -63,6 +63,9 @@ class GenderDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const genero = getEntities(stepContext.context.luisResult, 'Genero');
             bikes = await searchApi('Genero', genero.entidade);
+
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'genderDialog' });
+
             index = 0;
         }
 
@@ -94,6 +97,7 @@ class GenderDialog extends CancelAndHelpDialog {
                 await stepContext.context.sendActivity(wish);
                 return await stepContext.prompt(TEXT_PROMPT, '');
             }
+            case 'Encerrar': return await stepContext.cancelAllDialogs();
             default: return await stepContext.beginDialog('fallbackDialog');
         }
     }

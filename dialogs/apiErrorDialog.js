@@ -15,28 +15,38 @@ class ApiErrorDialog extends CancelAndHelpDialog {
             .addDialog(new ConfirmPrompt(CONFIRM_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
-                this.secondStep.bind(this),
+                this.secondStep.bind(this)
             ]));
 
         this.initialDialogId = WATERFALL_DIALOG;
     }
 
     async firstStep(stepContext) {
-        const Message = 'No momento estamos passando por algumas atualizações, por isso não consegui concluir a sua busca.\n O que você gostaria de fazer?';
-        await stepContext.context.sendActivity(Message);
+        const from = stepContext.options;
+
+        const errorMessage = 'No momento estamos passando por algumas atualizações, por isso não consegui concluir a sua busca';
+        const awaitMessage = 'O que você gostaria de fazer?';
+
+        await stepContext.context.sendActivity(errorMessage);
+        await stepContext.context.sendActivity(awaitMessage);
+
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Tentar novamente', 'Voltar ao menu', 'Encerrar atendimento']));
     }
 
     async secondStep(stepContext) {
+        const from = stepContext.options;
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'menu': return await stepContext.beginDialog('MainDialog')
+            case 'Menu': return await stepContext.beginDialog('MainDialog');
+            case 'TentarNovamente': return await stepContext.beginDialog( stepContext.options.from );
             case 'Encerrar':
                 const Message = 'Tente novamente mais tarde que provavelmente conseguirei concluir sua busca. Até lá!';
                 await stepContext.context.sendActivity(Message);
                 return await stepContext.cancelAllDialogs();
-            default:
+            default: 
+                const msg = 'Não foi possível reconhecer sua resposta';
+                await stepContext.context.sendActivity(msg);
+                return await stepContext.replaceDialog(this.initialDialogId);
         }
     }
-
 }
 module.exports.ApiErrorDialog = ApiErrorDialog;

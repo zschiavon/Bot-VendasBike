@@ -61,6 +61,8 @@ class PriceDialog extends CancelAndHelpDialog {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
             bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
             
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'priceDialog' });
+
             index = 0;
         }
 
@@ -93,9 +95,8 @@ class PriceDialog extends CancelAndHelpDialog {
             case 'ProximaBike': {
                 return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
             }
-            case 'OutroFiltro': {
-                return await stepContext.beginDialog('MainDialog');
-            }
+            case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
+            case 'Encerrar': return await stepContext.cancelAllDialogs();
             default: return await stepContext.beginDialog('fallbackDialog');
             
         }

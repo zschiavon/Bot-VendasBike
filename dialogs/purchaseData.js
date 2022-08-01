@@ -213,25 +213,16 @@ class PurchaseData extends CancelAndHelpDialog {
             promptContext.recognized.succeeded = true;     
             return true;
         }
-        return  false;          
+        return false;        
         
-
         function validPhone(context) {
             console.log(context);
 
             const regex = /^1\d\d(\d\d)?$|^0800 ?\d{3} ?\d{4}$|^(\(0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d\) ?|0?([1-9a-zA-Z][0-9a-zA-Z])?[1-9]\d[ .-]?)?(9|9[ .-])?[2-9]\d{3}[ .-]?\d{4}$/;
 
             return regex.test(context)
-            // if (regex.test(context)) {
-            //     promptContext.recognized.succeeded = true; 
-            //     return true
-            // } else {
-            //     return false
-            // } 
         }
-        //return false;    
     }
-
 }
 
 module.exports.PurchaseData = PurchaseData;

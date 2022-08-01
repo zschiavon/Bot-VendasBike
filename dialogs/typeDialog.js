@@ -54,6 +54,9 @@ class TypeDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const type = getEntities(stepContext.context.luisResult, 'Tipo');
             bikes = await searchApi('tipo', type.entidade);
+
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'typeDialog' });
+
             index = 0;
         }
 
@@ -84,11 +87,8 @@ class TypeDialog extends CancelAndHelpDialog {
                 await stepContext.context.sendActivity(wish);
                 return await stepContext.prompt(TEXT_PROMPT, '');
             }
-
-            case 'OutroFiltro': {
-                return await stepContext.beginDialog('MainDialog');
-            }
-
+            case 'Encerrar': return await stepContext.cancelAllDialogs();
+            case 'OutroFiltro': return await stepContext.beginDialog('MainDialog');
             default: return await stepContext.beginDialog('fallbackDialog');
         
         }
