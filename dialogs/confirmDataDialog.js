@@ -125,7 +125,7 @@ class ConfirmData extends CancelAndHelpDialog {
             break;
         case 'nome':
         case '7':
-            stepContext.values.dados.nume = result;
+            stepContext.values.dados.nome = result;
             break;
         case 'cpf':
         case '8': {
