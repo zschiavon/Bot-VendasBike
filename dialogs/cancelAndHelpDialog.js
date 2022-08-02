@@ -15,7 +15,6 @@ class CancelAndHelpDialog extends ComponentDialog {
     }
 
     async interrupt(innerDc) {
-       
         if (innerDc.context.activity.text) {
             switch (LuisRecognizer.topIntent(innerDc.context.luisResult)) {
             case 'ajuda':

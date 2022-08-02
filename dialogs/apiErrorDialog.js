@@ -35,17 +35,20 @@ class ApiErrorDialog extends CancelAndHelpDialog {
 
     async secondStep(stepContext) {
         const from = stepContext.options;
+
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'Menu': return await stepContext.beginDialog('MainDialog');
-            case 'TentarNovamente': return await stepContext.beginDialog( stepContext.options.from );
-            case 'Encerrar':
-                const Message = 'Tente novamente mais tarde que provavelmente conseguirei concluir sua busca. Até lá!';
-                await stepContext.context.sendActivity(Message);
-                return await stepContext.cancelAllDialogs();
-            default: 
-                const msg = 'Não foi possível reconhecer sua resposta';
-                await stepContext.context.sendActivity(msg);
-                return await stepContext.replaceDialog(this.initialDialogId);
+        case 'Menu': return await stepContext.beginDialog('MainDialog');
+        case 'TentarNovamente': return await stepContext.beginDialog(stepContext.options.from);
+        case 'Encerrar': {
+            const Message = 'Tente novamente mais tarde que provavelmente conseguirei concluir sua busca. Até lá!';
+            await stepContext.context.sendActivity(Message);
+            return await stepContext.cancelAllDialogs();
+        }
+        default: {
+            const msg = 'Não foi possível reconhecer sua resposta';
+            await stepContext.context.sendActivity(msg);
+            return await stepContext.replaceDialog(this.initialDialogId);
+        }
         }
     }
 }
