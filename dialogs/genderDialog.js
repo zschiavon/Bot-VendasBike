@@ -68,6 +68,9 @@ class GenderDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const genero = getEntities(stepContext.context.luisResult, 'Genero');
             bikes = await searchApi('Genero', genero.entidade);
+
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'genderDialog' });
+
             index = 0;
         }
 
@@ -109,12 +112,13 @@ class GenderDialog extends CancelAndHelpDialog {
         if (LuisRecognizer.topIntent(stepContext.context.luisResult) != 'Utilities_Confirm') {
             const message = 'O que você deseja fazer então?';
             await stepContext.context.sendActivity(message);
-            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions([
-                'Ver próxima bike', 'Explorar outro filtro de pesquisa', 'Encerrar']));
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Ver próxima bike', 'Explorar outro filtro de pesquisa', 'Encerrar']
+            ));
         }
 
-        stepContext.options.bike.push(stepContext.values.finalBike)
-        stepContext.values.arrays = stepContext.options.bike       
+        stepContext.options.bike.push(stepContext.values.finalBike);
+        stepContext.values.arrays = stepContext.options.bike;       
 
         const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`;
         const message = 'O que você deseja fazer agora?';

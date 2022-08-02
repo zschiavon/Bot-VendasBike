@@ -66,6 +66,8 @@ class PriceDialog extends CancelAndHelpDialog {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
             bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
             
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'priceDialog' });
+
             index = 0;
         }
 

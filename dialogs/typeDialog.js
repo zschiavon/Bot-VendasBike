@@ -59,6 +59,9 @@ class TypeDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const type = getEntities(stepContext.context.luisResult, 'Tipo');
             bikes = await searchApi('tipo', type.entidade);
+
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'typeDialog' });
+
             index = 0;
         }
 

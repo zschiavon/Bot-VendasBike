@@ -34,10 +34,10 @@ class RemoveBike extends CancelAndHelpDialog {
             return await stepContext.next();
         }
 
-        let names = bike.map(bike => bike.name)            
+        let names = bike.map(bike => bike.name);            
             
-        stepContext.values.names = names       
-        stepContext.values.cart = stepContext.options.bike 
+        stepContext.values.names = names;       
+        stepContext.values.cart = stepContext.options.bike;
 
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Retirar um item do carrinho', 'Adicionar mais bicicletas ao carrinho', 'Desistir da compra']))       
     }
@@ -73,23 +73,23 @@ class RemoveBike extends CancelAndHelpDialog {
             return await stepContext.cancelAllDialogs()
         }
     
-        const namePos = stepContext.values.names.indexOf(stepContext.result.value)        
-        const bikePos = stepContext.values.cart.findIndex(bike => bike.name == stepContext.result.value)
+        const namePos = stepContext.values.names.indexOf(stepContext.result.value)  ;      
+        const bikePos = stepContext.values.cart.findIndex(bike => bike.name == stepContext.result.value);
    
-        stepContext.values.names.splice(namePos,1)
-        stepContext.values.cart.splice(bikePos, 1)
+        stepContext.values.names.splice(namePos,1);
+        stepContext.values.cart.splice(bikePos, 1);
 
-        return await stepContext.replaceDialog('purchaseData', {bike: stepContext.values.cart})    
+        return await stepContext.replaceDialog('purchaseData', {bike: stepContext.values.cart})  ;  
     }
 
     async attemptValidator(promptContext) {
         if(promptContext.attemptCount > 2) {
             promptContext.recognized.succeeded = true
-            promptContext.recognized.value = {erro: true}         
+            promptContext.recognized.value = {erro: true}       
         }
 
-        promptContext.recognized.succeeded = true
-        return promptContext.recognized.value
+        promptContext.recognized.succeeded = true;
+        return promptContext.recognized.value;
     }
 }
 

@@ -41,10 +41,10 @@ const HELP_DIALOG = 'cancelAndHelpDialog';
 const FINISH_DIALOG = 'finishDialog';
 const PURCHASEDATA_DIALOG = 'purchaseData';
 const FALLBACK_DIALOG = 'fallbackDialog';
-const GATHERADRESS_DIALOG = 'gatherAdress'
-const CONFIRMDATA_DIALOG = 'confirmData'
-const REMOVEBIKE_DIALOG = 'removeBike'
-const APIERROR_DIALOG = 'apiErrorDialog'
+const GATHERADRESS_DIALOG = 'gatherAdress';
+const CONFIRMDATA_DIALOG = 'confirmData';
+const REMOVEBIKE_DIALOG = 'removeBike';
+const APIERROR_DIALOG = 'apiErrorDialog';
 
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
     MicrosoftAppId: process.env.MicrosoftAppId,

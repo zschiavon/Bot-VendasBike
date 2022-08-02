@@ -73,6 +73,9 @@ class ColorDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const color = getEntities(stepContext.context.luisResult, 'Cor');
             bikes = await searchApi('cor', color.entidade);
+
+            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'colorDialog' });
+
             index = 0;
         }
 

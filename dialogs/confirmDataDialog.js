@@ -42,31 +42,32 @@ class ConfirmData extends CancelAndHelpDialog {
     async secondStep(stepContext) {
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'Utilities_Confirm':
+            case 'Utilities_Confirm': {
                 const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 60000)}.`;
                 await stepContext.context.sendActivity(finalMessage);
                 return await stepContext.replaceDialog('finishDialog');
+            }
 
-            case 'Encerrar':
+            case 'Encerrar':{
                 const message = 'Qual informação que deseja alterar?'
-                await stepContext.context.sendActivity(message)
-                return await stepContext.prompt(TEXT_PROMPT, '')
+                await stepContext.context.sendActivity(message);
+                return await stepContext.prompt(TEXT_PROMPT, '');
+            }
 
         }
     }
 
     async thirdStep(stepContext) {
-        const result = stepContext.result.toLowerCase()
+        const result = stepContext.result.toLowerCase();
         console.log(result);
-        const found = result.match(/cpf|telefone|número|numero|complemento|endereço|cidade|bairro|nome|cep/g)
+        const found = result.match(/cpf|telefone|número|numero|complemento|endereço|cidade|bairro|nome|cep/g);
         console.log(found);
         if (found != null) {
             return await stepContext.next({ found: found })
         }
         const message = 'Não entendi qual dado deseja alterar. Para facilitar, você pode dizer o número da opção de 1 a 9.'
-        await stepContext.context.sendActivity(message)
-        return await stepContext.prompt(TEXT_PROMPT, '')
-
+        await stepContext.context.sendActivity(message);
+        return await stepContext.prompt(TEXT_PROMPT, '');
     }
 
     async fourthStep(stepContext) {
@@ -88,11 +89,6 @@ class ConfirmData extends CancelAndHelpDialog {
         const message = 'Sinto muito, estou com dificuldade de entender. Tente novamente daqui a pouco!'
         await stepContext.context.sendActivity(message)
         return await stepContext.cancelAllDialogs();
-
-
-
-
-
     }
 
     async fifthStep(stepContext) {
