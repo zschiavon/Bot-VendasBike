@@ -3,6 +3,7 @@ const { TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { buildCardData } = require('../services/buildCardData');
 const { LuisRecognizer } = require('botbuilder-ai');
+const {cpfValidatorFN} = require('../services/cpfValidator')
 
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
@@ -58,10 +59,9 @@ class ConfirmData extends CancelAndHelpDialog {
     }
 
     async thirdStep(stepContext) {
-        const result = stepContext.result.toLowerCase();
-        console.log(result);
+        const result = stepContext.result.toLowerCase();        
         const found = result.match(/cpf|telefone|número|numero|complemento|endereço|cidade|bairro|nome|cep/g);
-        console.log(found);
+                
         if (found != null) {
             return await stepContext.next({ found: found })
         }
@@ -141,8 +141,9 @@ class ConfirmData extends CancelAndHelpDialog {
             case '8':
                 result = await result.replace(/[a-zA-Z]+/g, '').trim()
                 result = await result.replace(/\W+/g, '').trim()
+                const validCpf = cpfValidatorFN(result)
 
-                if (result.length == 11) {
+                if (validCpf === true) {
                     stepContext.values.dados.cpf = result
                     break
                 }

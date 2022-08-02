@@ -31,6 +31,7 @@ class GenderDialog extends CancelAndHelpDialog {
     async actStep(stepContext) {
         const purcheDetails = stepContext.options;
         const { bikeVector, last } = stepContext.options;
+        stepContext.values.arrays = stepContext.options.bike
        
         
         if (!stepContext.context.luisResult) {
@@ -69,7 +70,7 @@ class GenderDialog extends CancelAndHelpDialog {
             const genero = getEntities(stepContext.context.luisResult, 'Genero');
             bikes = await searchApi('Genero', genero.entidade);
 
-            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'genderDialog' });
+            if (bikes.length < 1) return await stepContext.replaceDialog('apiErrorDialog', { from: 'genderDialog', bike: stepContext.values.arrays });
 
             index = 0;
         }

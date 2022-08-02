@@ -45,7 +45,7 @@ class PurchaseData extends CancelAndHelpDialog {
         if(bike.length == 0){
             const emptyCartMessage = 'Ops, o seu carrinho está vazio! Um segundo, irei te redirecionar ao menu...'
             await stepContext.context.sendActivity(emptyCartMessage, null, InputHints.IgnoringInput)
-            return await stepContext.beginDialog('MainDialog')
+            return await stepContext.replaceDialog('MainDialog')
         }
         if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
@@ -85,7 +85,7 @@ class PurchaseData extends CancelAndHelpDialog {
                 ))}          
             
             default: {
-                return await stepContext.beginDialog('removeBike', {bike: stepContext.options.bike });
+                return await stepContext.replaceDialog('removeBike', {bike: stepContext.options.bike });
             }
         }
 

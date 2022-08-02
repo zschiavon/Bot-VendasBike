@@ -19,7 +19,7 @@ class CancelAndHelpDialog extends ComponentDialog {
         if (innerDc.context.activity.text) {
             switch (LuisRecognizer.topIntent(innerDc.context.luisResult)) {
             case 'ajuda':
-            case 'Menu': return await innerDc.beginDialog('MainDialog');
+            case 'Menu': return await innerDc.replaceDialog('MainDialog');
             }
         }
     }

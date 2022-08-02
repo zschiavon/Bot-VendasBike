@@ -29,6 +29,7 @@ class TypeDialog extends CancelAndHelpDialog {
 
     async actStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
+        stepContext.values.arrays = stepContext.options.bike
 
         if (!bikeVector) {
             const messageText = 'Boa escolha! Vem comigo para selecionar a sua magrela. 🚴\nQual opção está procurando?';
@@ -60,7 +61,7 @@ class TypeDialog extends CancelAndHelpDialog {
             const type = getEntities(stepContext.context.luisResult, 'Tipo');
             bikes = await searchApi('tipo', type.entidade);
 
-            if (bikes.length < 1) return await stepContext.beginDialog('apiErrorDialog', { from: 'typeDialog' });
+            if (bikes.length < 1) return await stepContext.replaceDialog('apiErrorDialog', { from: 'typeDialog', bike: stepContext.values.arrays });
 
             index = 0;
         }
@@ -94,10 +95,10 @@ class TypeDialog extends CancelAndHelpDialog {
             }
 
             case 'OutroFiltro': {
-                return await stepContext.beginDialog('MainDialog',{ bike: stepContext.values.arrays });
+                return await stepContext.replaceDialog('MainDialog',{ bike: stepContext.values.arrays });
             }
 
-            default: return await stepContext.beginDialog('fallbackDialog',{ bike: stepContext.values.arrays });
+            default: return await stepContext.replaceDialog('fallbackDialog',{ bike: stepContext.values.arrays });
         
         }
     }
