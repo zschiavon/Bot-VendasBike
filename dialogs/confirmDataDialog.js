@@ -1,4 +1,3 @@
-
 const { TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { buildCardData } = require('../services/buildCardData');
@@ -24,8 +23,8 @@ class ConfirmData extends CancelAndHelpDialog {
     }
 
     async firstStep(stepContext) {
-        const { dados } = stepContext.options
-        stepContext.values.dados = dados
+        const { dados } = stepContext.options;
+        stepContext.values.dados = dados;
 
         const messageCase = 'Para finalizarmos a compra confirme seus dados';
         const messageCase1 = 'Dados informados:';
@@ -39,22 +38,18 @@ class ConfirmData extends CancelAndHelpDialog {
         return await stepContext.prompt(TEXT_PROMPT, '');
     }
 
-
     async secondStep(stepContext) {
-
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'Utilities_Confirm': {
-                const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 60000)}.`;
-                await stepContext.context.sendActivity(finalMessage);
-                return await stepContext.replaceDialog('finishDialog');
-            }
-
-            case 'Encerrar':{
-                const message = 'Qual informação que deseja alterar?'
-                await stepContext.context.sendActivity(message);
-                return await stepContext.prompt(TEXT_PROMPT, '');
-            }
-
+        case 'Utilities_Confirm': {
+            const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${ Math.floor(Math.random() * 60000) }.`;
+            await stepContext.context.sendActivity(finalMessage);
+            return await stepContext.replaceDialog('finishDialog');
+        }
+        case 'Encerrar': {
+            const message = 'Qual informação que deseja alterar?';
+            await stepContext.context.sendActivity(message);
+            return await stepContext.prompt(TEXT_PROMPT, '');
+        }
         }
     }
 
@@ -63,37 +58,38 @@ class ConfirmData extends CancelAndHelpDialog {
         const found = result.match(/cpf|telefone|número|numero|complemento|endereço|cidade|bairro|nome|cep/g);
                 
         if (found != null) {
-            return await stepContext.next({ found: found })
+            return await stepContext.next({ found: found });
         }
-        const message = 'Não entendi qual dado deseja alterar. Para facilitar, você pode dizer o número da opção de 1 a 9.'
+
+        const message = 'Não entendi qual dado deseja alterar. Para facilitar, você pode dizer o número da opção de 1 a 9.';
         await stepContext.context.sendActivity(message);
         return await stepContext.prompt(TEXT_PROMPT, '');
     }
 
     async fourthStep(stepContext) {
         if (stepContext.result.found) {
-            const message = `Me informe novamente ${stepContext.result.found[0].toUpperCase()}`
-            await stepContext.context.sendActivity(message)
-            stepContext.values.choice = stepContext.result.found[0].toUpperCase()
-            return await stepContext.prompt(TEXT_PROMPT, '')
+            const message = `Me informe novamente ${ stepContext.result.found[0].toUpperCase() }`;
+            await stepContext.context.sendActivity(message);
+            stepContext.values.choice = stepContext.result.found[0].toUpperCase();
+            return await stepContext.prompt(TEXT_PROMPT, '');
         }
 
         if (stepContext.result <= 9) {
-            const nomeDados = ['CEP', 'CIDADE', 'BAIRRO', 'ENDEREÇO', 'NÚMERO', 'COMPLEMENTO', 'NOME', 'CPF', 'TELEFONE']
-            const message = `Me informe novamente ${nomeDados[+stepContext.result - 1]}`
-            await stepContext.context.sendActivity(message)
-            stepContext.values.choice = stepContext.result
-            return await stepContext.prompt(TEXT_PROMPT, '')
+            const nomeDados = ['CEP', 'CIDADE', 'BAIRRO', 'ENDEREÇO', 'NÚMERO', 'COMPLEMENTO', 'NOME', 'CPF', 'TELEFONE'];
+            const message = `Me informe novamente ${ nomeDados[+stepContext.result - 1] }`;
+            await stepContext.context.sendActivity(message);
+            stepContext.values.choice = stepContext.result;
+            return await stepContext.prompt(TEXT_PROMPT, '');
         }
 
-        const message = 'Sinto muito, estou com dificuldade de entender. Tente novamente daqui a pouco!'
-        await stepContext.context.sendActivity(message)
+        const message = 'Sinto muito, estou com dificuldade de entender. Tente novamente daqui a pouco!';
+        await stepContext.context.sendActivity(message);
         return await stepContext.cancelAllDialogs();
     }
 
     async fifthStep(stepContext) {
-        let result = stepContext.result
-        const message = "Ops o pneu furou... dado inválido"
+        let result = stepContext.result;
+        const message = 'Ops o pneu furou... dado inválido';
         switch (stepContext.values.choice.toLowerCase()) {
             case 'cep':
             case '1':
@@ -165,9 +161,7 @@ class ConfirmData extends CancelAndHelpDialog {
 
 
         }
-        return await stepContext.replaceDialog(this.initialDialogId, { dados: stepContext.values.dados })
+        return await stepContext.replaceDialog(this.initialDialogId, { dados: stepContext.values.dados });
     }
-
-
 }
 module.exports.ConfirmData = ConfirmData;

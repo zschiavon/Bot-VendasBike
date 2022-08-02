@@ -1,4 +1,4 @@
-const {  MessageFactory } = require('botbuilder');
+const { MessageFactory } = require('botbuilder');
 const { ConfirmPrompt, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { LuisRecognizer } = require('botbuilder-ai');
@@ -30,8 +30,6 @@ class ColorDialog extends CancelAndHelpDialog {
         const { bikeVector, last } = stepContext.options;
         stepContext.values.arrays = stepContext.options.bike
 
-        
-
         if (!bikeVector) {
             const messageText = 'Qual a cor que você quer para a sua bicicleta?';
             await stepContext.context.sendActivity(messageText);
@@ -45,6 +43,7 @@ class ColorDialog extends CancelAndHelpDialog {
 
         if (!bikeVector) {
             const color = getEntities(stepContext.context.luisResult, 'Cor');
+
             if (color.entidade != undefined) {
                 return await stepContext.next(color);
             }
@@ -63,12 +62,11 @@ class ColorDialog extends CancelAndHelpDialog {
         let index = last + 1;
 
         if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'OutroFiltro') {
-            return await stepContext.replaceDialog('MainDialog',{ bike: stepContext.values.arrays });
-
+            return await stepContext.replaceDialog('MainDialog', { bike: stepContext.values.arrays });
         }
 
         if (LuisRecognizer.topIntent(stepContext.context.luisResult) == 'None') {
-            return await stepContext.replaceDialog('fallbackDialog',{ bike: stepContext.values.arrays });
+            return await stepContext.replaceDialog('fallbackDialog', { bike: stepContext.values.arrays });
         }
 
         if (!bikeVector) {
@@ -94,27 +92,26 @@ class ColorDialog extends CancelAndHelpDialog {
 
     async confirmStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        stepContext.values.arrays = stepContext.options.bike
+        stepContext.values.arrays = stepContext.options.bike;
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'ProximaBike': {
-                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
-            }
+        case 'ProximaBike': {
+            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
+        }
 
-            case 'MaisInfo': {
-                const info = `Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`;
-                const wish = 'Gostaria de comprar esta bicicleta agora?';
-                await stepContext.context.sendActivity(info);
-                await stepContext.context.sendActivity(wish);
-                return await stepContext.prompt(TEXT_PROMPT, '');
-            }
+        case 'MaisInfo': {
+            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+            const wish = 'Gostaria de comprar esta bicicleta agora?';
+            await stepContext.context.sendActivity(info);
+            await stepContext.context.sendActivity(wish);
+            return await stepContext.prompt(TEXT_PROMPT, '');
+        }
 
-            case 'OutroFiltro': {
-                return await stepContext.replaceDialog('MainDialog',{ bike: stepContext.values.arrays });
-            }
+        case 'OutroFiltro': {
+            return await stepContext.replaceDialog('MainDialog', { bike: stepContext.values.arrays });
+        }
 
-            default: return await stepContext.replaceDialog('fallbackDialog',{ bike: stepContext.values.arrays });
-        
+        default: return await stepContext.replaceDialog('fallbackDialog', { bike: stepContext.values.arrays });
         }
     }
 
@@ -127,10 +124,10 @@ class ColorDialog extends CancelAndHelpDialog {
             ));
         }
 
-        stepContext.options.bike.push(stepContext.values.finalBike)
-        stepContext.values.arrays = stepContext.options.bike
-        
-        const bikeName = `${stepContext.values.finalBike.name} foi adicionada ao carrinho de compras`;
+        stepContext.options.bike.push(stepContext.values.finalBike);
+        stepContext.values.arrays = stepContext.options.bike;
+
+        const bikeName = `${ stepContext.values.finalBike.name } foi adicionada ao carrinho de compras`;
         const message = 'O que você deseja fazer agora?';
 
         await stepContext.context.sendActivity(bikeName);
@@ -142,17 +139,17 @@ class ColorDialog extends CancelAndHelpDialog {
 
     async finalStep(stepContext) {
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'ProximaBike':
-                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
-            case 'Encerrar':
-                return await stepContext.replaceDialog('finishDialog');
-            case 'Continuar':
-            case 'OutroFiltro':
-                return await stepContext.replaceDialog('MainDialog', { bike: stepContext.values.arrays });
-            case 'FinalizarPedido':
-                return await stepContext.replaceDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name, bike: stepContext.values.arrays });
-            default:
-                return await stepContext.replaceDialog('FallbackDialog',{ bike: stepContext.values.arrays });
+        case 'ProximaBike':
+            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
+        case 'Encerrar':
+            return await stepContext.replaceDialog('finishDialog');
+        case 'Continuar':
+        case 'OutroFiltro':
+            return await stepContext.replaceDialog('MainDialog', { bike: stepContext.values.arrays });
+        case 'FinalizarPedido':
+            return await stepContext.replaceDialog('purchaseData', { bikeVector: stepContext.values.bikeVector, last: stepContext.values.bikeVector[stepContext.values.last].price, nameBike: stepContext.values.finalBike.name, bike: stepContext.values.arrays });
+        default:
+            return await stepContext.replaceDialog('FallbackDialog', { bike: stepContext.values.arrays });
         }
     }
 }

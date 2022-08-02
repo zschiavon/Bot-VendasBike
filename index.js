@@ -6,7 +6,7 @@ const ENV_FILE = path.join(__dirname, '.env');
 require('dotenv').config({ path: ENV_FILE });
 
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 const {
     CloudAdapter,
@@ -56,7 +56,7 @@ const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
 const dispatchRecognizer = new LuisRecognizer({
     applicationId: process.env.LuisAppId,
     endpointKey: process.env.LuisAPIKey,
-    endpoint: `https://${process.env.LuisAPIHostName}.cognitiveservices.azure.com/`
+    endpoint: `https://${ process.env.LuisAPIHostName }.cognitiveservices.azure.com/`
 }, {
     includeAllIntents: true
 }, true);
@@ -66,10 +66,10 @@ const botFrameworkAuthentication = createBotFrameworkAuthenticationFromConfigura
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 const onTurnErrorHandler = async (context, error) => {
-    console.error(`\n [onTurnError] unhandled error: ${error}`);
+    console.error(`\n [onTurnError] unhandled error: ${ error }`);
     await context.sendTraceActivity(
         'OnTurnError Trace',
-        `${error}`,
+        `${ error }`,
         'https://www.botframework.com/schemas/error',
         'TurnError'
     );
@@ -93,20 +93,20 @@ const typeDialog = new TypeDialog(TYPE_DIALOG);
 const colorDialog = new ColorDialog(COLOR_DIALOG);
 const priceDialog = new PriceDialog(PRICE_DIALOG);
 const purchaseData = new PurchaseData(PURCHASEDATA_DIALOG);
-const gatherAdress = new GatherAdress(GATHERADRESS_DIALOG)
+const gatherAdress = new GatherAdress(GATHERADRESS_DIALOG);
 const confirmData = new ConfirmData(CONFIRMDATA_DIALOG);
 const cancelAndHelpDialog = new CancelAndHelpDialog(HELP_DIALOG, dispatchRecognizer);
 const genderDialog = new GenderDialog(GENDER_DIALOG);
 const removeBike = new RemoveBike(REMOVEBIKE_DIALOG);
 const apiErrorDialog = new ApiErrorDialog(APIERROR_DIALOG);
-const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress,removeBike, confirmData, apiErrorDialog);
+const dialog = new MainDialog(typeDialog, colorDialog, genderDialog, priceDialog, purchaseData, fallbackDialog, cancelAndHelpDialog, finishDialog, gatherAdress, removeBike, confirmData, apiErrorDialog);
 const bot = new DialogAndWelcomeBot(conversationState, userState, dialog, dispatchRecognizer);
 
 const server = express();
 server.use(bodyParser.json({ extended: true }));
 
-server.listen(process.env.port || process.env.PORT || 3978, function () {
-    console.log(`\n${server.name} listening to ${server.url}`);
+server.listen(process.env.port || process.env.PORT || 3978, function() {
+    console.log(`\n${ server.name } listening to ${ server.url }`);
     console.log('\nObtenha o emulador do Bot Framework: https://aka.ms/botframework-emulator');
     console.log('\nPara falar com seu bot, abra o emulador selecione "Open Bot"');
 });

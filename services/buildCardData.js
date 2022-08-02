@@ -1,6 +1,5 @@
-
 const buildCardData = async (dados, stepContext) => {
-    const info = `1- Cep: ${ dados.cep ? dados.cep : "Cep não encontrado" } 
+    const info = `1- Cep: ${ dados.cep ? dados.cep : 'Cep não encontrado' } 
         \n\n 2- Cidade: ${ dados.localidade } 
         \n\n 3- Bairro: ${ dados.bairro }
         \n\n 4- Endereço: ${ dados.logradouro }
