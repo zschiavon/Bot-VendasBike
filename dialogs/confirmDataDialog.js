@@ -11,7 +11,7 @@ class ConfirmData extends CancelAndHelpDialog {
     constructor(id) {
         super(id || 'confirmData');
 
-        this.addDialog(new TextPrompt(TEXT_PROMPT))            
+        this.addDialog(new TextPrompt(TEXT_PROMPT))
             .addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
                 this.firstStep.bind(this),
                 this.secondStep.bind(this),
@@ -40,7 +40,7 @@ class ConfirmData extends CancelAndHelpDialog {
 
 
     async secondStep(stepContext) {
-        
+
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
             case 'Utilities_Confirm':
                 const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${Math.floor(Math.random() * 60000)}.`;
@@ -57,8 +57,9 @@ class ConfirmData extends CancelAndHelpDialog {
 
     async thirdStep(stepContext) {
         const result = stepContext.result.toLowerCase()
+        console.log(result);
         const found = result.match(/cpf|telefone|número|numero|complemento|endereço|cidade|bairro|nome|cep/g)
-
+        console.log(found);
         if (found != null) {
             return await stepContext.next({ found: found })
         }
@@ -78,7 +79,7 @@ class ConfirmData extends CancelAndHelpDialog {
 
         if (stepContext.result <= 9) {
             const nomeDados = ['CEP', 'CIDADE', 'BAIRRO', 'ENDEREÇO', 'NÚMERO', 'COMPLEMENTO', 'NOME', 'CPF', 'TELEFONE']
-            const message = `Me informe novamente ${nomeDados[+stepContext.result-1]}`
+            const message = `Me informe novamente ${nomeDados[+stepContext.result - 1]}`
             await stepContext.context.sendActivity(message)
             stepContext.values.choice = stepContext.result
             return await stepContext.prompt(TEXT_PROMPT, '')
@@ -99,24 +100,24 @@ class ConfirmData extends CancelAndHelpDialog {
         const message = "Ops o pneu furou... dado inválido"
         switch (stepContext.values.choice.toLowerCase()) {
             case 'cep':
-            case '1':                
+            case '1':
                 result = await result.replace(/[a-zA-Z]+/g, '').trim()
                 result = await result.replace(/\W+/g, '').trim()
 
                 if (result.length == 8) {
                     stepContext.values.dados.cep = result
-                    break                                       
-                } 
+                    break
+                }
                 await stepContext.context.sendActivity(message)
-                break 
+                break
             case 'cidade':
             case '2':
-                 stepContext.values.dados.localidade = result
+                stepContext.values.dados.localidade = result
                 break
 
             case 'bairro':
             case '3':
-               stepContext.values.dados.bairro = result
+                stepContext.values.dados.bairro = result
                 break
 
             case 'endereço':
@@ -126,7 +127,7 @@ class ConfirmData extends CancelAndHelpDialog {
 
             case 'número':
             case 'numero':
-            case '5':                
+            case '5':
                 stepContext.values.dados.numeroCasa = result
                 break
 
@@ -137,7 +138,7 @@ class ConfirmData extends CancelAndHelpDialog {
 
             case 'nome':
             case '7':
-                 stepContext.values.dados.nume = result
+                stepContext.values.dados.nume = result
                 break
 
             case 'cpf':
@@ -147,25 +148,25 @@ class ConfirmData extends CancelAndHelpDialog {
 
                 if (result.length == 11) {
                     stepContext.values.dados.cpf = result
-                    break                                       
-                }  
+                    break
+                }
                 await stepContext.context.sendActivity(message)
                 break
 
             case 'telefone':
-            case '9':  
+            case '9':
 
                 result = await result.replace(/[a-zA-Z]+/g, '').trim()
                 result = await result.replace(/\W+/g, '').trim()
 
-                if (result.length >= 8 && result.length <= 11)  {
+                if (result.length >= 8 && result.length <= 11) {
                     stepContext.values.dados.telefone = result
-                    break                                      
+                    break
                 }
                 await stepContext.context.sendActivity(message)
-                break                 
-               
-                
+                break
+
+
         }
         return await stepContext.replaceDialog(this.initialDialogId, { dados: stepContext.values.dados })
     }
