@@ -1,0 +1,38 @@
+{
+    "name": "bike-vendas-bot",
+    "version": "1.0.0",
+    "description": "Bot para venda de bicicletas",
+    "author": "Amira Ahmad, Isadora Brito, Juan Schiavon e Ramon Rocha",
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {
+        "start": "node ./index.js",
+        "watch": "node ./index.js",
+        "lint": "eslint .",
+        "test": "nyc mocha tests/**/*.test.js"
+    },
+    "dependencies": {
+        "@microsoft/recognizers-text-data-types-timex-expression": "1.1.4",
+        "axios": "^0.27.2",
+        "body-parser": "^1.20.0",
+        "botbuilder": "~4.16.0",
+        "botbuilder-ai": "~4.16.0",
+        "botbuilder-dialogs": "~4.16.0",
+        "botbuilder-testing": "~4.16.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.18.1",
+        "moment-timezone": "~0.5.33",
+        "restify": "~8.6.0"
+    },
+    "devDependencies": {
+        "axios": "^0.27.2",
+        "eslint": "^7.0.0",
+        "eslint-config-standard": "^14.1.1",
+        "eslint-plugin-import": "^2.20.2",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^4.0.1",
+        "mocha": "^7.1.2",
+        "nyc": "^15.0.1"
+    }
+}
