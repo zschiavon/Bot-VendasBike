@@ -21,13 +21,13 @@ Neste projeto, foram utilizadas a API [Loja de bicicletas](https://pb-bikes-api.
 
 - Baixe o [Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator/releases/tag/v4.14.1)
   
-- Crie um projeto na [Azure](https://portal.azure.com) e também no [LUIS](https://www.luis.ai)
+- Crie o recurso na [Azure](https://portal.azure.com) e o App no [LUIS](https://www.luis.ai)
 
 - Baixe o arquivo [.lu](https://bitbucket.org/030189rr/bot_vendas/downloads/) e importe para o [LUIS](https://www.luis.ai)
 
 - No [LUIS](https://www.luis.ai) treine e publique o arquivo
 
-- No [LUIS](https://www.luis.ai) pegue as variáveis de ambiente fornecida e cole nas variáveis abaixo e crie um arquivo `.env` no projeto colando as variáveis</br>
+- No [LUIS](https://www.luis.ai), copie as variáveis de ambiente fornecidas e preencha os campos abaixo. Crie um arquivo `.env` no projeto e cole as variáveis</br>
   
      ```text   
        LuisAppId = 
@@ -41,4 +41,4 @@ Neste projeto, foram utilizadas a API [Loja de bicicletas](https://pb-bikes-api.
 
 - Abra o **Bot Framework Emulator** e coloque a seguinte rota `http://localhost:3978/api/messages`
 - Mande uma mensagem inicial e teste o bot :robot:
----
+
