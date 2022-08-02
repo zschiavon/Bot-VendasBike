@@ -1,11 +1,11 @@
 # Bot_vendas
 
 <p align="center">
-Este Bot é um projeto desenvolvido para o programa de bolsas da Compass Uol
+Este Bot é um projeto desenvolvido para o Programa de Bolsas da Compass.Uol
 </p>
 
-Consiste em um bot para vendas de bicicletas onde o cliente terá acesso a várias bicicletas e poderá adiciona-las ao seu carrinho e finalizar sua compra colocando seus dados de pagamento e para entrega.</br>
-Foram utilizados neste projeto a api [Loja de bicicletas](https://pb-bikes-api.herokuapp.com/api-docs/#/), a api [Viacep](https://viacep.com.br/) para consulta e validação dos ceps e [Microsoft Azure](https://portal.azure.com) para criar o projeto e intenções do [Luis](https://www.luis.ai).</br>
+O projeto consiste em um bot para vendas de bicicletas, onde o cliente terá acesso a várias bicicletas, podendo escolher dentre diversas categorias, adicioná-las ao carrinho e simular uma finalização de compra real, informando a forma de pagamento e o endereço para a entrega.</br>
+Neste projeto, foram utilizadas a API [Loja de bicicletas](https://pb-bikes-api.herokuapp.com/api-docs/#/) e a [Viacep](https://viacep.com.br/) para consulta e validação dos ceps. Também foram utilizados recursos da [Microsoft Azure](https://portal.azure.com) para criar o projeto e o IA Service [Luis](https://www.luis.ai).</br>
 ---
 
 ## Developers
