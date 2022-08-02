@@ -29,7 +29,7 @@ class PriceDialog extends CancelAndHelpDialog {
 
     async actStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        stepContext.values.arrays = stepContext.options.bike
+        stepContext.values.arrays = stepContext.options.bike;
 
         if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
@@ -64,7 +64,7 @@ class PriceDialog extends CancelAndHelpDialog {
         if (!bikeVector) {
             const price = getEntities(stepContext.context.luisResult, 'builtin.number');
             bikes = await searchApi('preco', price.entidade, stepContext.context.luisResult);
-            
+
             if (bikes.length < 1) return await stepContext.replaceDialog('apiErrorDialog', { from: 'priceDialog', bike: stepContext.values.arrays });
 
             index = 0;

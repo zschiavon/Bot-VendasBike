@@ -2,7 +2,7 @@ const { TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
 const { buildCardData } = require('../services/buildCardData');
 const { LuisRecognizer } = require('botbuilder-ai');
-const {cpfValidatorFN} = require('../services/cpfValidator')
+const { cpfValidatorFN } = require('../services/cpfValidator');
 
 const TEXT_PROMPT = 'textPrompt';
 const WATERFALL_DIALOG = 'waterfallDialog';
@@ -54,9 +54,9 @@ class ConfirmData extends CancelAndHelpDialog {
     }
 
     async thirdStep(stepContext) {
-        const result = stepContext.result.toLowerCase();        
+        const result = stepContext.result.toLowerCase();
         const found = result.match(/cpf|telefone|número|numero|complemento|endereço|cidade|bairro|nome|cep/g);
-                
+
         if (found != null) {
             return await stepContext.next({ found: found });
         }
@@ -91,75 +91,66 @@ class ConfirmData extends CancelAndHelpDialog {
         let result = stepContext.result;
         const message = 'Ops o pneu furou... dado inválido';
         switch (stepContext.values.choice.toLowerCase()) {
-            case 'cep':
-            case '1':
-                result = await result.replace(/[a-zA-Z]+/g, '').trim()
-                result = await result.replace(/\W+/g, '').trim()
+        case 'cep':
+        case '1':
+            result = await result.replace(/[a-zA-Z]+/g, '').trim();
+            result = await result.replace(/\W+/g, '').trim();
 
-                if (result.length == 8) {
-                    stepContext.values.dados.cep = result
-                    break
-                }
-                await stepContext.context.sendActivity(message)
-                break
-            case 'cidade':
-            case '2':
-                stepContext.values.dados.localidade = result
-                break
+            if (result.length == 8) {
+                stepContext.values.dados.cep = result;
+                break;
+            }
+            await stepContext.context.sendActivity(message);
+            break;
+        case 'cidade':
+        case '2':
+            stepContext.values.dados.localidade = result;
+            break;
+        case 'bairro':
+        case '3':
+            stepContext.values.dados.bairro = result;
+            break;
+        case 'endereço':
+        case '4':
+            stepContext.values.dados.logradouro = result;
+            break;
+        case 'número':
+        case 'numero':
+        case '5':
+            stepContext.values.dados.numeroCasa = result;
+            break;
+        case 'complemento':
+        case '6':
+            stepContext.values.dados.complemento = result;
+            break;
+        case 'nome':
+        case '7':
+            stepContext.values.dados.nume = result;
+            break;
+        case 'cpf':
+        case '8': {
+            result = await result.replace(/[a-zA-Z]+/g, '').trim();
+            result = await result.replace(/\W+/g, '').trim();
+            const validCpf = cpfValidatorFN(result);
 
-            case 'bairro':
-            case '3':
-                stepContext.values.dados.bairro = result
-                break
+            if (validCpf === true) {
+                stepContext.values.dados.cpf = result;
+                break;
+            }
+            await stepContext.context.sendActivity(message);
+            break;
+        }
+        case 'telefone':
+        case '9':
+            result = await result.replace(/[a-zA-Z]+/g, '').trim();
+            result = await result.replace(/\W+/g, '').trim();
 
-            case 'endereço':
-            case '4':
-                stepContext.values.dados.logradouro = result
-                break
-
-            case 'número':
-            case 'numero':
-            case '5':
-                stepContext.values.dados.numeroCasa = result
-                break
-
-            case 'complemento':
-            case '6':
-                stepContext.values.dados.complemento = result
-                break
-
-            case 'nome':
-            case '7':
-                stepContext.values.dados.nume = result
-                break
-
-            case 'cpf':
-            case '8':
-                result = await result.replace(/[a-zA-Z]+/g, '').trim()
-                result = await result.replace(/\W+/g, '').trim()
-                const validCpf = cpfValidatorFN(result)
-
-                if (validCpf === true) {
-                    stepContext.values.dados.cpf = result
-                    break
-                }
-                await stepContext.context.sendActivity(message)
-                break
-
-            case 'telefone':
-            case '9':
-
-                result = await result.replace(/[a-zA-Z]+/g, '').trim()
-                result = await result.replace(/\W+/g, '').trim()
-
-                if (result.length >= 8 && result.length <= 11) {
-                    stepContext.values.dados.telefone = result
-                    break
-                }
-                await stepContext.context.sendActivity(message)
-                break
-
-
+            if (result.length >= 8 && result.length <= 11) {
+                stepContext.values.dados.telefone = result;
+                break;
+            }
+            await stepContext.context.sendActivity(message);
+            break;
         }
         return await stepContext.replaceDialog(this.initialDialogId, { dados: stepContext.values.dados });
     }

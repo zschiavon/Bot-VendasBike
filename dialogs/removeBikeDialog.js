@@ -43,20 +43,19 @@ class RemoveBike extends CancelAndHelpDialog {
 
     async decisionStep(stepContext) {
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'RetirarItem':               
-                return await stepContext.next()
-            case 'Continuar':                
-                return await stepContext.replaceDialog('MainDialog', {bike: stepContext.values.cart})                 
-            case 'Encerrar':                
-                return await stepContext.replaceDialog('finishDialog') 
-            default:
-                return await stepContext.replaceDialog('fallbackDialog', {bike: stepContext.values.cart})           
-                   
-            } 
-    }    
+        case 'RetirarItem':
+            return await stepContext.next();
+        case 'Continuar':
+            return await stepContext.replaceDialog('MainDialog', { bike: stepContext.values.cart });
+        case 'Encerrar':
+            return await stepContext.replaceDialog('finishDialog');
+        default:
+            return await stepContext.replaceDialog('fallbackDialog', { bike: stepContext.values.cart });
+        }
+    }
 
-    async choiceStep(stepContext) {        
-        let message = 'Digite o número da opção que deseja retirar do seu carrinho'            
+    async choiceStep(stepContext) {
+        let message = 'Digite o número da opção que deseja retirar do seu carrinho';
         return await stepContext.prompt(CHOICE_PROMPT, {
             prompt: message,
             retryPrompt: 'Desculpe, não entendi. Para retirar do carrinho eu preciso do número de uma das opções baixo:',

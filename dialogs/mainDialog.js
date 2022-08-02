@@ -78,7 +78,7 @@ class MainDialog extends ComponentDialog {
         case 'FiltroPreco':
             return await stepContext.beginDialog('priceDialog', purcheDetails);
         default:
-            return await stepContext.beginDialog('fallbackDialog',purcheDetails);
+            return await stepContext.beginDialog('fallbackDialog', purcheDetails);
         }
     }
 }

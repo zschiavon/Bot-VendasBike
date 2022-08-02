@@ -30,9 +30,8 @@ class GenderDialog extends CancelAndHelpDialog {
     async actStep(stepContext) {
         const purcheDetails = stepContext.options;
         const { bikeVector, last } = stepContext.options;
-        stepContext.values.arrays = stepContext.options.bike
-       
-        
+        stepContext.values.arrays = stepContext.options.bike;
+
         if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
             await stepContext.context.sendActivity(messageText, null, InputHints.IgnoringInput);

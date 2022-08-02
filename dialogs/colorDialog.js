@@ -28,7 +28,7 @@ class ColorDialog extends CancelAndHelpDialog {
 
     async colorStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        stepContext.values.arrays = stepContext.options.bike
+        stepContext.values.arrays = stepContext.options.bike;
 
         if (!bikeVector) {
             const messageText = 'Qual a cor que você quer para a sua bicicleta?';
@@ -71,7 +71,7 @@ class ColorDialog extends CancelAndHelpDialog {
 
         if (!bikeVector) {
             const color = getEntities(stepContext.context.luisResult, 'Cor');
-            bikes = await searchApi('cor', color.entidade);            
+            bikes = await searchApi('cor', color.entidade);
             if (bikes.length < 1) return await stepContext.replaceDialog('apiErrorDialog', { from: 'colorDialog', bike: stepContext.values.arrays });
 
             index = 0;

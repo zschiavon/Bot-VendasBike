@@ -22,8 +22,8 @@ class ApiErrorDialog extends CancelAndHelpDialog {
     }
 
     async firstStep(stepContext) {
-        const purcheDetails = stepContext.options
-        const { from, bike } = stepContext.options; 
+        const purcheDetails = stepContext.options;
+        const { from, bike } = stepContext.options;
 
         const errorMessage = 'No momento estamos passando por algumas atualizações, por isso não consegui concluir a sua busca';
         const awaitMessage = 'O que você gostaria de fazer?';
@@ -34,20 +34,24 @@ class ApiErrorDialog extends CancelAndHelpDialog {
         return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(['Tentar novamente', 'Voltar ao menu', 'Encerrar atendimento']));
     }
 
-    async secondStep(stepContext) {         
+    async secondStep(stepContext) {
         const { from, bike } = stepContext.options;
-        
+
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'Menu': return await stepContext.replaceDialog('MainDialog',{bike: stepContext.options.bike});
-            case 'TentarNovamente': return await stepContext.replaceDialog( stepContext.options.from, {bike: stepContext.options.bike} );
-            case 'Encerrar':
-                const Message = 'Tente novamente mais tarde que provavelmente conseguirei concluir sua busca. Até lá!';
-                await stepContext.context.sendActivity(Message);
-                return await stepContext.cancelAllDialogs();
-            default: 
-                const msg = 'Não foi possível reconhecer sua resposta';
-                await stepContext.context.sendActivity(msg);
-                return await stepContext.replaceDialog(this.initialDialogId, {bike: stepContext.options.bike});
+        case 'Menu':
+            return await stepContext.replaceDialog('MainDialog', { bike: stepContext.options.bike });
+        case 'TentarNovamente':
+            return await stepContext.replaceDialog(stepContext.options.from, { bike: stepContext.options.bike });
+        case 'Encerrar': {
+            const Message = 'Tente novamente mais tarde que provavelmente conseguirei concluir sua busca. Até lá!';
+            await stepContext.context.sendActivity(Message);
+            return await stepContext.cancelAllDialogs();
+        }
+        default: {
+            const msg = 'Não foi possível reconhecer sua resposta';
+            await stepContext.context.sendActivity(msg);
+            return await stepContext.replaceDialog(this.initialDialogId, { bike: stepContext.options.bike });
+        }
         }
     }
 }

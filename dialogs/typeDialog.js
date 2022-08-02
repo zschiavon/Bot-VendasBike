@@ -29,7 +29,7 @@ class TypeDialog extends CancelAndHelpDialog {
 
     async actStep(stepContext) {
         const { bikeVector, last } = stepContext.options;
-        stepContext.values.arrays = stepContext.options.bike
+        stepContext.values.arrays = stepContext.options.bike;
 
         if (!bikeVector) {
             const messageText = 'Boa escolha! Vem comigo para selecionar a sua magrela. 🚴\nQual opção está procurando?';
@@ -82,24 +82,23 @@ class TypeDialog extends CancelAndHelpDialog {
         stepContext.values.arrays = stepContext.options.bike;
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'ProximaBike': {
-                return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
-            }
-            case 'MaisInfo': {
-                const info = `Descrição: ${stepContext.values.bikeVector[stepContext.values.last].description}`;
-                const wish = 'Gostaria de comprar esta bicicleta agora?';
+        case 'ProximaBike': {
+            return await stepContext.replaceDialog(this.initialDialogId, { bikeVector: stepContext.values.bikeVector, last: stepContext.values.last, bike: stepContext.values.arrays });
+        }
+        case 'MaisInfo': {
+            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+            const wish = 'Gostaria de comprar esta bicicleta agora?';
 
-                await stepContext.context.sendActivity(info);
-                await stepContext.context.sendActivity(wish);
-                return await stepContext.prompt(TEXT_PROMPT, '');
-            }
+            await stepContext.context.sendActivity(info);
+            await stepContext.context.sendActivity(wish);
+            return await stepContext.prompt(TEXT_PROMPT, '');
+        }
 
-            case 'OutroFiltro': {
-                return await stepContext.replaceDialog('MainDialog',{ bike: stepContext.values.arrays });
-            }
+        case 'OutroFiltro': {
+            return await stepContext.replaceDialog('MainDialog', { bike: stepContext.values.arrays });
+        }
 
-            default: return await stepContext.replaceDialog('fallbackDialog',{ bike: stepContext.values.arrays });
-        
+        default: return await stepContext.replaceDialog('fallbackDialog', { bike: stepContext.values.arrays });
         }
     }
 

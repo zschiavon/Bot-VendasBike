@@ -42,10 +42,11 @@ class PurchaseData extends CancelAndHelpDialog {
         const { bikeVector, last, nameBike, bike } = stepContext.options;
         const data = new Date();
         let soma = 0;
-        if(bike.length == 0){
-            const emptyCartMessage = 'Ops, o seu carrinho está vazio! Um segundo, irei te redirecionar ao menu...'
-            await stepContext.context.sendActivity(emptyCartMessage, null, InputHints.IgnoringInput)
-            return await stepContext.replaceDialog('MainDialog')
+
+        if (bike.length == 0) {
+            const emptyCartMessage = 'Ops, o seu carrinho está vazio! Um segundo, irei te redirecionar ao menu...';
+            await stepContext.context.sendActivity(emptyCartMessage, null, InputHints.IgnoringInput);
+            return await stepContext.replaceDialog('MainDialog');
         }
         if (!stepContext.context.luisResult) {
             const messageText = 'NOTE: LUIS is not configured. To enable all capabilities, add `LuisAppId`, `LuisAPIKey` and `LuisAPIHostName` to the .env file.';
@@ -75,18 +76,18 @@ class PurchaseData extends CancelAndHelpDialog {
         const { bikeVector, last, nameBike, bike } = stepContext.options;
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
-            case 'Utilities_Confirm': {
-                const god = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.';
-                const paymentMethod = 'Escolha o método de pagamento';
-                await stepContext.context.sendActivity(god);
-                await stepContext.context.sendActivity(paymentMethod);
-                return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
-                    ['Boleto', 'Cartão de crédito', 'Pix']
-                ))}          
-            
-            default: {
-                return await stepContext.replaceDialog('removeBike', {bike: stepContext.options.bike });
-            }
+        case 'Utilities_Confirm': {
+            const god = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.';
+            const paymentMethod = 'Escolha o método de pagamento';
+            await stepContext.context.sendActivity(god);
+            await stepContext.context.sendActivity(paymentMethod);
+            return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
+                ['Boleto', 'Cartão de crédito', 'Pix']
+            ));
+        }
+        default: {
+            return await stepContext.replaceDialog('removeBike', { bike: stepContext.options.bike });
+        }
         }
     }
 
