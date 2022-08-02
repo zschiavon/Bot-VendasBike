@@ -2,7 +2,6 @@ const { InputHints, MessageFactory } = require('botbuilder');
 const { LuisRecognizer } = require('botbuilder-ai');
 const { ConfirmPrompt, TextPrompt, ChoicePrompt, ChoiceFactory, WaterfallDialog, NumberPrompt } = require('botbuilder-dialogs');
 const { CancelAndHelpDialog } = require('./cancelAndHelpDialog');
-const { buildCardData } = require('../services/buildCardData');
 const { cpfValidatorFN } = require('../services/cpfValidator');
 
 const axios = require('axios');
@@ -138,7 +137,6 @@ class PurchaseData extends CancelAndHelpDialog {
     }
 
     async cpfStep(stepContext) {
-
         stepContext.values.name = stepContext.result
 
         let message = 'Qual o seu CPF?';           
