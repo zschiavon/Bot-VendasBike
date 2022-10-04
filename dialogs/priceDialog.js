@@ -37,8 +37,8 @@ class PriceDialog extends CancelAndHelpDialog {
             return await stepContext.next();
         }
         if (!bikeVector) {
-            const firstMessage = 'Quanto você pretende investir na sua bicicleta? 🚴\nEscolha entre as faixas de preço abaixo:';
-            await stepContext.context.sendActivity(firstMessage);
+            const message = 'Quanto você pretende investir na sua bicicleta? 🚴\nEscolha entre as faixas de preço abaixo:';
+            await stepContext.context.sendActivity(message);
 
             return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
                 ['Até R$ 500,00', 'De R$ 500,00 até R$ 1500,00', 'De R$ 1500,00 até R$ 3000,00', 'Mais de R$ 3000,00', 'Explorar outro filtro']
@@ -89,10 +89,10 @@ class PriceDialog extends CancelAndHelpDialog {
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'MaisInfo': {
-            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+            const information = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
             const wish = 'Gostaria de comprar esta bicicleta agora?';
 
-            await stepContext.context.sendActivity(info);
+            await stepContext.context.sendActivity(information);
             await stepContext.context.sendActivity(wish);
             return await stepContext.prompt(TEXT_PROMPT, '');
         }

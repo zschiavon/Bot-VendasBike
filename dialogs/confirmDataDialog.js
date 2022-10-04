@@ -26,14 +26,14 @@ class ConfirmData extends CancelAndHelpDialog {
         const { dados } = stepContext.options;
         stepContext.values.dados = dados;
 
-        const messageCase = 'Para finalizarmos a compra confirme seus dados';
-        const messageCase1 = 'Dados informados:';
-        const messageCase2 = 'Todos os dados estão corretos?';
+        const firstMessage = 'Para finalizarmos a compra confirme seus dados';
+        const secondMessage = 'Dados informados:';
+        const fourthMessage = 'Todos os dados estão corretos?';
 
-        await stepContext.context.sendActivity(messageCase);
-        await stepContext.context.sendActivity(messageCase1);
+        await stepContext.context.sendActivity(firstMessage);
+        await stepContext.context.sendActivity(secondMessage);
         await buildCardData(dados, stepContext);
-        await stepContext.context.sendActivity(messageCase2);
+        await stepContext.context.sendActivity(fourthMessage);
 
         return await stepContext.prompt(TEXT_PROMPT, '');
     }
@@ -41,8 +41,8 @@ class ConfirmData extends CancelAndHelpDialog {
     async secondStep(stepContext) {
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'Utilities_Confirm': {
-            const finalMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${ Math.floor(Math.random() * 60000) }.`;
-            await stepContext.context.sendActivity(finalMessage);
+            const finalizationMessage = `Parabéns! Você acabou de finalizar a sua compra. Este é o número do seu pedido: ${ Math.floor(Math.random() * 60000) }.`;
+            await stepContext.context.sendActivity(finalizationMessage);
             return await stepContext.replaceDialog('finishDialog');
         }
         case 'Encerrar': {
@@ -75,8 +75,8 @@ class ConfirmData extends CancelAndHelpDialog {
         }
 
         if (stepContext.result <= 9) {
-            const nomeDados = ['CEP', 'CIDADE', 'BAIRRO', 'ENDEREÇO', 'NÚMERO', 'COMPLEMENTO', 'NOME', 'CPF', 'TELEFONE'];
-            const message = `Me informe novamente ${ nomeDados[+stepContext.result - 1] }`;
+            const dataName = ['CEP', 'CIDADE', 'BAIRRO', 'ENDEREÇO', 'NÚMERO', 'COMPLEMENTO', 'NOME', 'CPF', 'TELEFONE'];
+            const message = `Me informe novamente ${ dataName[+stepContext.result - 1] }`;
             await stepContext.context.sendActivity(message);
             stepContext.values.choice = stepContext.result;
             return await stepContext.prompt(TEXT_PROMPT, '');

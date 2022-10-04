@@ -31,8 +31,8 @@ class ColorDialog extends CancelAndHelpDialog {
         stepContext.values.arrays = stepContext.options.bike;
 
         if (!bikeVector) {
-            const messageText = 'Qual a cor que você quer para a sua bicicleta?';
-            await stepContext.context.sendActivity(messageText);
+            const message = 'Qual a cor que você quer para a sua bicicleta?';
+            await stepContext.context.sendActivity(message);
             return await stepContext.prompt(TEXT_PROMPT, '');
         }
         return await stepContext.next();
@@ -100,9 +100,9 @@ class ColorDialog extends CancelAndHelpDialog {
         }
 
         case 'MaisInfo': {
-            const info = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
+            const information = `Descrição: ${ stepContext.values.bikeVector[stepContext.values.last].description }`;
             const wish = 'Gostaria de comprar esta bicicleta agora?';
-            await stepContext.context.sendActivity(info);
+            await stepContext.context.sendActivity(information);
             await stepContext.context.sendActivity(wish);
             return await stepContext.prompt(TEXT_PROMPT, '');
         }

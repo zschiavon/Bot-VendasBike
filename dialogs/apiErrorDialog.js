@@ -43,13 +43,13 @@ class ApiErrorDialog extends CancelAndHelpDialog {
         case 'TentarNovamente':
             return await stepContext.replaceDialog(stepContext.options.from, { bike: stepContext.options.bike });
         case 'Encerrar': {
-            const Message = 'Tente novamente mais tarde que provavelmente conseguirei concluir sua busca. Até lá!';
-            await stepContext.context.sendActivity(Message);
+            const message = 'Tente novamente mais tarde que provavelmente conseguirei concluir sua busca. Até lá!';
+            await stepContext.context.sendActivity(message);
             return await stepContext.cancelAllDialogs();
         }
         default: {
-            const msg = 'Não foi possível reconhecer sua resposta';
-            await stepContext.context.sendActivity(msg);
+            const message = 'Não foi possível reconhecer sua resposta';
+            await stepContext.context.sendActivity(message);
             return await stepContext.replaceDialog(this.initialDialogId, { bike: stepContext.options.bike });
         }
         }
