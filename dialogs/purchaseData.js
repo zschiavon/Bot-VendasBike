@@ -54,13 +54,13 @@ class PurchaseData extends CancelAndHelpDialog {
             return await stepContext.next();
         }
 
-        const Message = `Este é seu carrinho de compras. Os valores são validos para ${ data.getDate() }/${ data.getMonth() + 1 }/${ data.getFullYear() } `;
-        await stepContext.context.sendActivity(Message);
+        const message = `Este é seu carrinho de compras. Os valores são validos para ${ data.getDate() }/${ data.getMonth() + 1 }/${ data.getFullYear() } `;
+        await stepContext.context.sendActivity(message);
 
         for (let i = 0; i < bike.length; i++) {
-            const mensagem = `${ [i + 1] } - ${ bike[i].name }`;
+            const bikeOnCart = `${ [i + 1] } - ${ bike[i].name }`;
             soma += bike[i].price;
-            await stepContext.context.sendActivity(mensagem);
+            await stepContext.context.sendActivity(bikeOnCart);
         }
 
         const valuepurchase = `Valor total: R$${ soma.toFixed(2) }`;
@@ -77,9 +77,9 @@ class PurchaseData extends CancelAndHelpDialog {
 
         switch (LuisRecognizer.topIntent(stepContext.context.luisResult)) {
         case 'Utilities_Confirm': {
-            const god = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.';
+            const message = 'Boa escolha! Falta pouco para você finalizar a compra de sua bicicleta.';
             const paymentMethod = 'Escolha o método de pagamento';
-            await stepContext.context.sendActivity(god);
+            await stepContext.context.sendActivity(message);
             await stepContext.context.sendActivity(paymentMethod);
             return await stepContext.prompt(TEXT_PROMPT, MessageFactory.suggestedActions(
                 ['Boleto', 'Cartão de crédito', 'Pix']

@@ -53,8 +53,8 @@ class FinishDialog extends CancelAndHelpDialog {
 
     async feedbackStep(stepContext) {
         const feedback = stepContext.result; // Enviar o feedback para algum lugar
-        const byeMessage = 'Obrigado pelo feedback, isso vai ajudar a me tornar um assistente virtual melhor. Até a próxima!';
-        await stepContext.context.sendActivity(byeMessage);
+        const goodbyeMessage = 'Obrigado pelo feedback, isso vai ajudar a me tornar um assistente virtual melhor. Até a próxima!';
+        await stepContext.context.sendActivity(goodbyeMessage);
         return await stepContext.cancelAllDialogs();
     }
 }
